@@ -26,6 +26,8 @@
 
 
 import config as cf
+from App import model
+import csv
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
@@ -48,3 +50,24 @@ los mismos.
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
+
+def getClustCom(cont, lp1, lp2):
+    pass
+
+def getPuntosConex(cont):
+    pass
+
+def getRutaMenorDist(cont, paisA, paisB):
+    pass
+
+def getInfraest(cont):
+    pass
+
+def getFallas(cont, lp):
+    pass
+
+def getMejoresCanales(cont, pais, cable):
+    pass
+
+def getMejorRuta(cont, ip1, ip2):
+    pass

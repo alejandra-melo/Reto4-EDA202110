@@ -271,7 +271,6 @@ while True:
         print("\nTiempo [ms]: " + str(delta_time) + "  ||  " + 
               "Memoria [kB]: " + str(delta_memory) + "\n")
 
-
     else:
         sys.exit(0)
 sys.exit(0)
