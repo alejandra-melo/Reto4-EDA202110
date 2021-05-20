@@ -49,7 +49,7 @@ def loadData(analyzer):
     """
     vertices = loadVertices(analyzer)
     pais = loadCountrys(analyzer)
-    loadConnections(analyzer)
+#    loadConnections(analyzer)
 
     return vertices, pais 
     
@@ -68,9 +68,12 @@ def loadConnections(analyzer):
     servicesfile = cf.data_dir + 'connections.csv'
     input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
                                 delimiter=",")
+    for i in input_file:
+        origen = i['origin']
+        destino = i['destination']
+        longitud = i['cable_lenght']
+        model.addLandingConnection(analyzer, origen, destino, longitud)
     
-    
-    None
 
 
 def loadVertices(analyzer):
@@ -122,6 +125,13 @@ def numeroPoints(analyzer):
     """
     cont = model.numeroPoints(analyzer)
     return cont
+
+def totalConexiones(analyzer):
+    """
+    Retorna el numero de arcos entre landing points
+    """
+    cont = model.totalConexiones(analyzer)
+    return cont 
 
 def getClustCom(cont, lp1, lp2):
     clust = model.getClustCom(cont, lp1, lp2)

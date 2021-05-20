@@ -79,7 +79,7 @@ def newAnalyzer():
 # Funciones para agregar informacion al catalogo
 
 
-def addStopConnection(analyzer, lastservice, service):
+def addLandingConnection(analyzer, origen, destino,distancia):
     """
     Adiciona los landing_points al grafo como vertices y arcos entre las
     landing_points adyacentes.
@@ -92,16 +92,9 @@ def addStopConnection(analyzer, lastservice, service):
     Si la estacion sirve otra ruta, se tiene: 75009-101
     """
     try:
-        origin = formatVertex(lastservice)
-        destination = formatVertex(service)
-        cleanServiceDistance(lastservice, service)
-        distance = float(service['Distance']) - float(lastservice['Distance'])
-        distance = abs(distance)
-        addStop(analyzer, origin)
-        addStop(analyzer, destination)
-        addConnection(analyzer, origin, destination, distance)
-        addRouteStop(analyzer, service)
-        addRouteStop(analyzer, lastservice)
+        addVertice(analyzer, origen)
+        addVertice(analyzer, destino)
+        addConnection(analyzer, origen, destino, distancia)
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:addStopConnection')
@@ -122,6 +115,7 @@ def addVertice(analyzer, landing_pointId):
     try:
         if not gr.containsVertex(analyzer['connections'], landing_pointId):
             gr.insertVertex(analyzer['connections'], landing_pointId)
+            
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:addstop')
@@ -132,8 +126,11 @@ def addConnection(analyzer, origin, destination, distance):
     Adiciona un arco entre dos landing_points
     """
     edge = gr.getEdge(analyzer['connections'], origin, destination)
+    existVertice = gr.containsVertex(origin)
     if edge is None:
         gr.addEdge(analyzer['connections'], origin, destination, distance)
+    
+
     return analyzer
 
 def addRouteConnections(analyzer):
@@ -178,7 +175,6 @@ def newCountry(name):
     country['lista'] = lt.newList('ARRAY_LIST')
     return country
     
-    
 # Funciones de consulta
 
 def numeroPaises(analyzer):
@@ -196,6 +192,13 @@ def numeroPoints(analyzer):
     """
     cont = mp.size(analyzer['landing_points'])
     return cont
+
+def totalConexiones(analyzer):
+    """
+    Retorna el numero de arcos entre landing points
+    """
+    cont = gr.numEdges(analyzer['connections'])
+    return cont 
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista

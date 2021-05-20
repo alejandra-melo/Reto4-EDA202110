@@ -105,6 +105,8 @@ while True:
         numCountries = controller.totalLandingPoints(catalog)
         numLanding = controller.numeroPoints(catalog)
 
+    #   numConexiones = controller.totalConexiones(catalog)
+
         print('Total de landing points: ' + str(numLanding))
         print('Total de Paises: ' + str(numCountries))
         print('Primer landing points cargados: ' + primerVertice['landing_point_id']
@@ -112,6 +114,7 @@ while True:
         primerVertice['longitude'] )
         print('Ultimo pais cargado: ' + ultimoPais['CountryName'] + ' || ' +
         ultimoPais['Population'] + ' || ' + ultimoPais['Internet users'])
+    #    print('Numero total de conexiones: ' + numConexiones)
 
     elif int(inputs[0]) == 2:
         lp1 = input("Nombre del landing point 1: ")
