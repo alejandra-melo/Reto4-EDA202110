@@ -23,7 +23,11 @@
 import config as cf
 import sys
 import controller
+import threading
+from DISClib.ADT import orderedmap as om
 from DISClib.ADT import list as lt
+from App import controller
+from DISClib.ADT import stack
 import time
 import tracemalloc
 assert cf
@@ -104,7 +108,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getClustCom(analyzer, lp1, lp2)
+        respuesta = controller.getClustCom(cont, lp1, lp2)
         
         stop_memory = getMemory()
         stop_time = getTime()
@@ -129,7 +133,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getPuntosConex(analyzer)
+        respuesta = controller.getPuntosConex(cont)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -153,7 +157,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getRutaMenorDist(analyzer, paisA, paisB)
+        respuesta = controller.getRutaMenorDist(cont, paisA, paisB)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -172,7 +176,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getInfraest(analyzer)
+        respuesta = controller.getInfraest(cont)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -193,7 +197,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
         
-        respuesta = controller.getFallas(analyzer, lp)
+        respuesta = controller.getFallas(cont, lp)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -215,7 +219,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getMejoresCanales(analyzer, pais, cable)
+        respuesta = controller.getMejoresCanales(cont, pais, cable)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -237,7 +241,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getMejorRuta(analyzer, ip1, ip2)
+        respuesta = controller.getMejorRuta(cont, ip1, ip2)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -257,6 +261,15 @@ while True:
         start_memory = getMemory()
 
         print("\n++++++ Req. No. 8 results ... ++++++")
+
+        
+        stop_memory = getMemory()
+        stop_time = getTime()
+        tracemalloc.stop()
+        delta_time = stop_time - start_time
+        delta_memory = deltaMemory(start_memory, stop_memory)
+        print("\nTiempo [ms]: " + str(delta_time) + "  ||  " + 
+              "Memoria [kB]: " + str(delta_memory) + "\n")
 
 
     else:

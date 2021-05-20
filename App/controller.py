@@ -36,3 +36,32 @@ El controlador se encarga de mediar entre la vista y el modelo.
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+
+def getClustCom(cont, lp1, lp2):
+    clust = model.getClustCom(cont, lp1, lp2)
+    return clust
+
+def getPuntosConex(cont):
+    puntos = model.getPuntosConex(cont)
+    return puntos
+
+def getRutaMenorDist(cont, paisA, paisB):
+    ruta = model.getRutaMenorDist(cont, paisA, paisB)
+    return ruta
+
+def getInfraest(cont):
+    inf = model.getInfraest(cont)
+    return inf
+
+def getFallas(cont, lp):
+    fallas = model.getFallas(cont, lp)
+    return fallas
+
+def getMejoresCanales(cont, pais, cable):
+    canales = model.getMejoresCanales(cont, pais, cable)
+    return canales
+
+def getMejorRuta(cont, ip1, ip2):
+    ruta = model.getMejorRuta(cont, ip1, ip2)
+    return ruta
+
