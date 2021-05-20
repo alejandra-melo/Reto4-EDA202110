@@ -23,7 +23,13 @@
 import config as cf
 import sys
 import controller
+import threading
+from DISClib.ADT import orderedmap as om
 from DISClib.ADT import list as lt
+from App import controller
+from DISClib.ADT import stack
+import time
+import tracemalloc
 assert cf
 
 
@@ -53,6 +59,36 @@ def printMenu():
 
 
 catalog = None
+
+
+def getTime():
+    """
+    devuelve el instante tiempo de procesamiento en milisegundos
+    """
+    return float(time.perf_counter()*1000)
+
+
+def getMemory():
+    """
+    toma una muestra de la memoria alocada en instante de tiempo
+    """
+    return tracemalloc.take_snapshot()
+
+
+def deltaMemory(start_memory, stop_memory):
+    """
+    calcula la diferencia en memoria alocada del programa entre dos
+    instantes de tiempo y devuelve el resultado en bytes (ej.: 2100.0 B)
+    """
+    memory_diff = stop_memory.compare_to(start_memory, "filename")
+    delta_memory = 0.0
+
+    # suma de las diferencias en uso de memoria
+    for stat in memory_diff:
+        delta_memory = delta_memory + stat.size_diff
+    # de Byte -> kByte
+    delta_memory = delta_memory/1024.0
+    return delta_memory
 
 """
 Menu principal
@@ -87,7 +123,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getClustCom(analyzer, lp1, lp2)
+        respuesta = controller.getClustCom(cont, lp1, lp2)
         
         stop_memory = getMemory()
         stop_time = getTime()
@@ -112,7 +148,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getPuntosConex(analyzer)
+        respuesta = controller.getPuntosConex(cont)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -136,7 +172,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getRutaMenorDist(analyzer, paisA, paisB)
+        respuesta = controller.getRutaMenorDist(cont, paisA, paisB)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -155,7 +191,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getInfraest(analyzer)
+        respuesta = controller.getInfraest(cont)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -176,7 +212,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
         
-        respuesta = controller.getFallas(analyzer, lp)
+        respuesta = controller.getFallas(cont, lp)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -198,7 +234,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getMejoresCanales(analyzer, pais, cable)
+        respuesta = controller.getMejoresCanales(cont, pais, cable)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -220,7 +256,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getMejorRuta(analyzer, ip1, ip2)
+        respuesta = controller.getMejorRuta(cont, ip1, ip2)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -241,6 +277,14 @@ while True:
 
         print("\n++++++ Req. No. 8 results ... ++++++")
 
+        
+        stop_memory = getMemory()
+        stop_time = getTime()
+        tracemalloc.stop()
+        delta_time = stop_time - start_time
+        delta_memory = deltaMemory(start_memory, stop_memory)
+        print("\nTiempo [ms]: " + str(delta_time) + "  ||  " + 
+              "Memoria [kB]: " + str(delta_memory) + "\n")
 
     else:
         sys.exit(0)
