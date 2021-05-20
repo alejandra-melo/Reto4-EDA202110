@@ -31,8 +31,96 @@ El controlador se encarga de mediar entre la vista y el modelo.
 
 # Inicialización del Catálogo de libros
 
+def init():
+    """
+    Llama la funcion de inicializacion  del modelo.
+    """
+    # analyzer es utilizado para interactuar con el modelo
+    analyzer = model.newAnalyzer()
+    return analyzer
+
+
 # Funciones para la carga de datos
+
+def loadData(analyzer):
+
+    """
+    Carga los datos de los archivos csv al catalogo
+    """
+    vertices = loadVertices(analyzer)
+    pais = loadCountrys(analyzer)
+    loadConnections(analyzer)
+
+    return vertices, pais 
+    
+    
+
+
+def loadConnections(analyzer):
+    """
+    Se crea un arco entre cada par de vertices que
+    pertenecen al mismo landing_point y van en el mismo sentido.
+
+    addRouteConnection crea conexiones entre diferentes cables
+    servidas en un mismo landing_point.
+    """
+
+    servicesfile = cf.data_dir + 'connections.csv'
+    input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
+                                delimiter=",")
+    
+    
+    None
+
+
+def loadVertices(analyzer):
+    """
+    Carga los vertices del archivo.
+    """
+
+    etiquetasfile = cf.data_dir + 'landing_points.csv'
+    input_file = csv.DictReader(open(etiquetasfile, encoding='utf-8'))
+    cont = 0
+    primerVertice = None
+    for vertice in input_file:
+        cont +=1
+        model.mapVertice(analyzer, vertice)
+        if cont == 1:
+            primerVertice = vertice 
+    return primerVertice
+        
+
+def loadCountrys(analyzer):
+    
+    """
+    Carga los paises del archivo.
+    """
+
+    etiquetasfile = cf.data_dir + 'countries.csv'
+    input_file = csv.DictReader(open(etiquetasfile, encoding='utf-8'))
+    ultimo = None
+    for country in input_file:
+        model.addCountry(analyzer, country)
+        ultimo = country 
+    return ultimo
+
 
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+
+def totalLandingPoints(analyzer):
+    """
+    Retorna el numero de paises unicos
+    """
+    cont = model.numeroPaises(analyzer)
+    return cont
+
+def numeroPoints(analyzer):
+    """
+    Retorna el numero de landing points
+    """
+    cont = model.numeroPoints(analyzer)
+    return cont
+
+
