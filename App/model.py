@@ -52,12 +52,28 @@ los mismos.
 # Funciones de ordenamiento
 
 def getClustCom(cont, lp1, lp2):
+    """
+    Retorna el número total de clústeres presentes en 
+    la red e informa si los landing points están en el
+    mismo clúster o no.
+    """
     pass
 
+
 def getPuntosConex(cont):
+    """
+    Retorna la lista de landing points (nombre, pais,
+    identificador) y el total de cables conectados a 
+    dichos landing points.
+    """
     pass
 
 def getRutaMenorDist(cont, paisA, paisB):
+    """
+    Retorna la ruta (incluir la distancia de conexión [km]
+    entre cada par consecutivo de landing points) y la
+    distancia total de la ruta.
+    """
     pass
 
 def getInfraest(cont):
