@@ -134,30 +134,96 @@ while True:
         print("\n++++++ Req. No. 3 results ... ++++++")
 
     elif int(inputs[0]) == 5:
+        delta_time = -1.0
+        delta_memory = -1.0
+        tracemalloc.start()
+        start_time = getTime()
+        start_memory = getMemory()
+
         respuesta = controller.getInfraest(analyzer)
+
+        stop_memory = getMemory()
+        stop_time = getTime()
+        tracemalloc.stop()
+        delta_time = stop_time - start_time
+        delta_memory = deltaMemory(start_memory, stop_memory)
+        print("\nTiempo [ms]: " + str(delta_time) + "  ||  " + 
+              "Memoria [kB]: " + str(delta_memory) + "\n")
+       
         print("\n++++++ Req. No. 4 results ... ++++++")
 
     elif int(inputs[0]) == 6:
         lp = input("Nombre del landing point: ")
+
+        delta_time = -1.0
+        delta_memory = -1.0
+        tracemalloc.start()
+        start_time = getTime()
+        start_memory = getMemory()
         
         respuesta = controller.getFallas(analyzer, lp)
+
+        stop_memory = getMemory()
+        stop_time = getTime()
+        tracemalloc.stop()
+        delta_time = stop_time - start_time
+        delta_memory = deltaMemory(start_memory, stop_memory)
+        print("\nTiempo [ms]: " + str(delta_time) + "  ||  " + 
+              "Memoria [kB]: " + str(delta_memory) + "\n")
+
         print("\n++++++ Req. No. 5 results ... ++++++")
 
     elif int(inputs[0]) == 7:
         pais = input("Nombre del país: ")
         cable = input("Nombre del cable: ")
 
+        delta_time = -1.0
+        delta_memory = -1.0
+        tracemalloc.start()
+        start_time = getTime()
+        start_memory = getMemory()
+
         respuesta = controller.getMejoresCanales(analyzer, pais, cable)
+
+        stop_memory = getMemory()
+        stop_time = getTime()
+        tracemalloc.stop()
+        delta_time = stop_time - start_time
+        delta_memory = deltaMemory(start_memory, stop_memory)
+        print("\nTiempo [ms]: " + str(delta_time) + "  ||  " + 
+              "Memoria [kB]: " + str(delta_memory) + "\n")
+
         print("\n++++++ Req. No. 6 results ... ++++++")        
 
     elif int(inputs[0]) == 8:
         ip1 = input("Dirección IP1: ")
         ip2 = input("Dirección IP2: ")
 
+        delta_time = -1.0
+        delta_memory = -1.0
+        tracemalloc.start()
+        start_time = getTime()
+        start_memory = getMemory()
+
         respuesta = controller.getMejorRuta(analyzer, ip1, ip2)
+
+        stop_memory = getMemory()
+        stop_time = getTime()
+        tracemalloc.stop()
+        delta_time = stop_time - start_time
+        delta_memory = deltaMemory(start_memory, stop_memory)
+        print("\nTiempo [ms]: " + str(delta_time) + "  ||  " + 
+              "Memoria [kB]: " + str(delta_memory) + "\n")
+
         print("\n++++++ Req. No. 7 results ... ++++++")
 
     elif int(inputs[0]) == 9:
+        delta_time = -1.0
+        delta_memory = -1.0
+        tracemalloc.start()
+        start_time = getTime()
+        start_memory = getMemory()
+
         print("\n++++++ Req. No. 8 results ... ++++++")
 
 
