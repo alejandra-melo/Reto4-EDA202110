@@ -77,6 +77,8 @@ def getRutaMenorDist(cont, paisA, paisB):
     pass
 
 def getInfraest(cont):
+    """
+    """
     pass
 
 def getFallas(cont, lp):
