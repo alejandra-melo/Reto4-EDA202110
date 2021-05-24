@@ -33,6 +33,7 @@ import tracemalloc
 assert cf
 
 
+
 """
 La vista se encarga de la interacción con el usuario
 Presenta el menu de opciones y por cada seleccion
@@ -97,6 +98,23 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
+        catalog = controller.init() 
+        rtas = controller.loadData(catalog)
+        primerVertice = rtas[0]
+        ultimoPais = rtas[1]
+        numCountries = controller.totalLandingPoints(catalog)
+        numLanding = controller.numeroPoints(catalog)
+
+    #   numConexiones = controller.totalConexiones(catalog)
+
+        print('Total de landing points: ' + str(numLanding))
+        print('Total de Paises: ' + str(numCountries))
+        print('Primer landing points cargados: ' + primerVertice['landing_point_id']
+        +' || '+ primerVertice['name']+ ' || ' + primerVertice['latitude'] + ' || ' + 
+        primerVertice['longitude'] )
+        print('Ultimo pais cargado: ' + ultimoPais['CountryName'] + ' || ' +
+        ultimoPais['Population'] + ' || ' + ultimoPais['Internet users'])
+    #    print('Numero total de conexiones: ' + numConexiones)
 
     elif int(inputs[0]) == 2:
         lp1 = input("Nombre del landing point 1: ")
