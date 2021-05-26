@@ -49,6 +49,7 @@ def loadData(analyzer):
     """
     vertices = loadVertices(analyzer)
     pais = loadCountrys(analyzer)
+    loadConnections(analyzer)
 #    loadConnections(analyzer)
 
     return vertices, pais 
@@ -69,10 +70,10 @@ def loadConnections(analyzer):
     input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
                                 delimiter=",")
     for i in input_file:
-        origen = i['origin']
+        origen = i['\ufefforigin']
         destino = i['destination']
-        longitud = i['cable_lenght']
-        model.addLandingConnection(analyzer, origen, destino, longitud)
+        longitud = i['cable_length']
+        model.addConnection(analyzer, origen, destino, longitud, i)
     
 
 
@@ -87,7 +88,7 @@ def loadVertices(analyzer):
     primerVertice = None
     for vertice in input_file:
         cont +=1
-        model.mapVertice(analyzer, vertice)
+        model.crearVertices(analyzer, vertice)
         if cont == 1:
             primerVertice = vertice 
     return primerVertice

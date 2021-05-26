@@ -104,10 +104,12 @@ while True:
         ultimoPais = rtas[1]
         numCountries = controller.totalLandingPoints(catalog)
         numLanding = controller.numeroPoints(catalog)
+        numConexiones = controller.totalConexiones(catalog)
 
     #   numConexiones = controller.totalConexiones(catalog)
 
         print('Total de landing points: ' + str(numLanding))
+        print('Total de conexiones: '+ str(numConexiones))
         print('Total de Paises: ' + str(numCountries))
         print('Primer landing points cargados: ' + primerVertice['landing_point_id']
         +' || '+ primerVertice['name']+ ' || ' + primerVertice['latitude'] + ' || ' + 

@@ -53,14 +53,9 @@ def newAnalyzer():
     """
     try:
         analyzer = {
-                    'landing_points': None,
                     'connections': None,  
                     'countrys':None
                    }
-
-        analyzer['landing_points'] = mp.newMap(numelements=14000,
-                                     maptype='PROBING',
-                                     comparefunction=compareIds)
 
         analyzer['connections'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
@@ -79,77 +74,27 @@ def newAnalyzer():
 # Funciones para agregar informacion al catalogo
 
 
-def addLandingConnection(analyzer, origen, destino,distancia):
+def addConnection(analyzer, origen, destino,distancia, connection):
     """
-    Adiciona los landing_points al grafo como vertices y arcos entre las
-    landing_points adyacentes.
-
-    Los vertices tienen por nombre el identificador del landing_point
-    seguido de la ruta que sirve.  Por ejemplo:
-
-    75009-10
-
-    Si la estacion sirve otra ruta, se tiene: 75009-101
+    Crea conexiones entre landing points (arcos)
     """
+    grafo = analyzer['connections']
     try:
-        addVertice(analyzer, origen)
-        addVertice(analyzer, destino)
-        addConnection(analyzer, origen, destino, distancia)
+        gr.addEdge(grafo,origen,destino,distancia)
         return analyzer
     except Exception as exp:
-        error.reraise(exp, 'model:addStopConnection')
+        error.reraise(exp, 'model:addConnection')
 
 # Funciones para creacion de datos
 
-def mapVertice(analyzer, landing_pointId):
-    """
-    Adiciona un landing point al map
-    """
-    mp.put(analyzer['landing_points'],landing_pointId['landing_point_id'],landing_pointId)
-    None
-
-def addVertice(analyzer, landing_pointId):
-    """
-    Adiciona una landing_point como un vertice del grafo
-    """
-    try:
-        if not gr.containsVertex(analyzer['connections'], landing_pointId):
-            gr.insertVertex(analyzer['connections'], landing_pointId)
-            
-        return analyzer
-    except Exception as exp:
-        error.reraise(exp, 'model:addstop')
-
-
-def addConnection(analyzer, origin, destination, distance):
-    """
-    Adiciona un arco entre dos landing_points
-    """
-    edge = gr.getEdge(analyzer['connections'], origin, destination)
-    existVertice = gr.containsVertex(origin)
-    if edge is None:
-        gr.addEdge(analyzer['connections'], origin, destination, distance)
+def crearVertices(analyzer, landing_pointId):
     
+    grafo = analyzer['connections']
+    vertice = landing_pointId['landing_point_id']
+     
+    gr.insertVertex(grafo,vertice)
 
-    return analyzer
-
-def addRouteConnections(analyzer):
-    """
-    Por cada vertice (cada landing_point) se recorre la lista
-    de rutas servidas en dicho landing_point y se crean
-    arcos entre ellas para representar el cambio de ruta
-    que se puede realizar en una estación.
-    """
-    lststops = mp.keySet(analyzer['stops'])
-    for key in lt.iterator(lststops):
-        lstroutes = mp.get(analyzer['stops'], key)['value']
-        prevrout = None
-        for route in lt.iterator(lstroutes):
-            route = key + '-' + route
-            if prevrout is not None:
-                addConnection(analyzer, prevrout, route, 0)
-                addConnection(analyzer, route, prevrout, 0)
-            prevrout = route
+    
 
 def addCountry(analyzer, country):
     
@@ -190,7 +135,8 @@ def numeroPoints(analyzer):
     """
     Retorna el numero de landing points
     """
-    cont = mp.size(analyzer['landing_points'])
+
+    cont = gr.numVertices(analyzer['connections'])
     return cont
 
 def totalConexiones(analyzer):
