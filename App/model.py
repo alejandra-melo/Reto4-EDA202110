@@ -170,7 +170,7 @@ def getClustCom(analyzer, lp1, lp2):
     la red e informa si los landing points están en el
     mismo clúster o no.
     """
-    sccs = KosarajuSCC(analyzer["connections"])
+    sccs = scc.KosarajuSCC(analyzer["connections"])
     clusters = scc.sccCount(analyzer["connections"], sccs, lp1)
     mismo_c = scc.stronglyConnected(sccs, lp1, lp2)
 
