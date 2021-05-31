@@ -184,7 +184,7 @@ def getPuntosConex(analyzer):
     """
     pass
 
-def getRutaMenorDist(cont, paisA, paisB):
+def getRutaMenorDist(analyzer, paisA, paisB):
     """
     Retorna la ruta (incluir la distancia de conexión [km]
     entre cada par consecutivo de landing points) y la
@@ -192,18 +192,18 @@ def getRutaMenorDist(cont, paisA, paisB):
     """
     pass
 
-def getInfraest(cont):
+def getInfraest(analyzer):
     """
     """
     pass
 
-def getFallas(cont, lp):
+def getFallas(analyzer, lp):
     pass
 
-def getMejoresCanales(cont, pais, cable):
+def getMejoresCanales(analyzer, pais, cable):
     pass
 
-def getMejorRuta(cont, ip1, ip2):
+def getMejorRuta(analyzer, ip1, ip2):
     pass
 
 
