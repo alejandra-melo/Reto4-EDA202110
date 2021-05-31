@@ -32,6 +32,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Graphs import scc
 from DISClib.ADT.graph import gr
 from DISClib.Utils import error as error
 assert cf
@@ -169,8 +170,11 @@ def getClustCom(cont, lp1, lp2):
     la red e informa si los landing points están en el
     mismo clúster o no.
     """
-    pass
+    sccs = KosarajuSCC(cont)
+    clusters = scc.sccCount(cont, sccs, lp1)
+    mismo_c = scc.stronglyConnected(sccs, lp1, lp2)
 
+    return (clusters, mismo_c)
 
 def getPuntosConex(cont):
     """
@@ -201,3 +205,6 @@ def getMejoresCanales(cont, pais, cable):
 
 def getMejorRuta(cont, ip1, ip2):
     pass
+
+
+
