@@ -128,7 +128,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getClustCom(cont, lp1, lp2)
+        respuesta = controller.getClustCom(analyzer, lp1, lp2)
         
         stop_memory = getMemory()
         stop_time = getTime()
@@ -153,7 +153,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getPuntosConex(cont)
+        respuesta = controller.getPuntosConex(analyzer)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -177,7 +177,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getRutaMenorDist(cont, paisA, paisB)
+        respuesta = controller.getRutaMenorDist(analyzer, paisA, paisB)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -196,7 +196,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getInfraest(cont)
+        respuesta = controller.getInfraest(analyzer)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -217,7 +217,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
         
-        respuesta = controller.getFallas(cont, lp)
+        respuesta = controller.getFallas(analyzer, lp)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -239,7 +239,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getMejoresCanales(cont, pais, cable)
+        respuesta = controller.getMejoresCanales(analyzer, pais, cable)
 
         stop_memory = getMemory()
         stop_time = getTime()
@@ -261,7 +261,7 @@ while True:
         start_time = getTime()
         start_memory = getMemory()
 
-        respuesta = controller.getMejorRuta(cont, ip1, ip2)
+        respuesta = controller.getMejorRuta(analyzer, ip1, ip2)
 
         stop_memory = getMemory()
         stop_time = getTime()

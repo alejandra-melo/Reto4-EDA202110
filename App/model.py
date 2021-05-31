@@ -164,19 +164,19 @@ def compareIds(stop, keyvaluestop):
 
 # Funciones de ordenamiento
 
-def getClustCom(cont, lp1, lp2):
+def getClustCom(analyzer, lp1, lp2):
     """
     Retorna el número total de clústeres presentes en 
     la red e informa si los landing points están en el
     mismo clúster o no.
     """
-    sccs = KosarajuSCC(cont)
-    clusters = scc.sccCount(cont, sccs, lp1)
+    sccs = KosarajuSCC(analyzer["connections"])
+    clusters = scc.sccCount(analyzer["connections"], sccs, lp1)
     mismo_c = scc.stronglyConnected(sccs, lp1, lp2)
 
     return (clusters, mismo_c)
 
-def getPuntosConex(cont):
+def getPuntosConex(analyzer):
     """
     Retorna la lista de landing points (nombre, pais,
     identificador) y el total de cables conectados a 

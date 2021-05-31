@@ -134,31 +134,31 @@ def totalConexiones(analyzer):
     cont = model.totalConexiones(analyzer)
     return cont 
 
-def getClustCom(cont, lp1, lp2):
-    clust = model.getClustCom(cont, lp1, lp2)
+def getClustCom(analyzer, lp1, lp2):
+    clust = model.getClustCom(analyzer, lp1, lp2)
     return clust
 
-def getPuntosConex(cont):
-    puntos = model.getPuntosConex(cont)
+def getPuntosConex(analyzer):
+    puntos = model.getPuntosConex(analyzer)
     return puntos
 
-def getRutaMenorDist(cont, paisA, paisB):
-    ruta = model.getRutaMenorDist(cont, paisA, paisB)
+def getRutaMenorDist(analyzer, paisA, paisB):
+    ruta = model.getRutaMenorDist(analyzer, paisA, paisB)
     return ruta
 
-def getInfraest(cont):
-    inf = model.getInfraest(cont)
+def getInfraest(analyzer):
+    inf = model.getInfraest(analyzer)
     return inf
 
-def getFallas(cont, lp):
-    fallas = model.getFallas(cont, lp)
+def getFallas(analyzer, lp):
+    fallas = model.getFallas(analyzer, lp)
     return fallas
 
-def getMejoresCanales(cont, pais, cable):
-    canales = model.getMejoresCanales(cont, pais, cable)
+def getMejoresCanales(analyzer, pais, cable):
+    canales = model.getMejoresCanales(analyzer, pais, cable)
     return canales
 
-def getMejorRuta(cont, ip1, ip2):
-    ruta = model.getMejorRuta(cont, ip1, ip2)
+def getMejorRuta(analyzer, ip1, ip2):
+    ruta = model.getMejorRuta(analyzer, ip1, ip2)
     return ruta
 
