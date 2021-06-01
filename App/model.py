@@ -114,7 +114,7 @@ def addCountry(analyzer, country):
         lista = pais['lista']
         lt.addLast(lista,country)
         mp.put(paises,key,pais)
-
+    print(lista)
 
 def newCountry(name):
     """
@@ -125,19 +125,19 @@ def newCountry(name):
     return country
 
 
-def addLandingP(analyzer, landing_point):
+def addLandingP(analyzer, vertice):
     
     lps = analyzer['landing_points']
-    key = landing_point['landing_point_id']
+    key = vertice['landing_point_id']
     esta = mp.contains(lps, key)
     if esta:
         entry = mp.get(lps,key)
         value = me.getValue(entry)
-        lt.addLast(value['lista'], landing_point)
+        lt.addLast(value['lista'], vertice)
     else:
         lp = newLandingP(key)
         lista = lp['lista']
-        lt.addLast(lista,landing_point)
+        lt.addLast(lista, vertice)
         mp.put(lps,key,lp)
 
 
@@ -145,9 +145,9 @@ def newLandingP(id):
     """
     Define la estructura de un landing point 
     """
-    landing_point = { 'id' : id, 'lista': None}
-    landing_point['lista'] = lt.newList('ARRAY_LIST')
-    return landing_point
+    lp = { 'id' : id, 'lista': None}
+    lp['lista'] = lt.newList('ARRAY_LIST')
+    return lp
 
 
 # Funciones de consulta
