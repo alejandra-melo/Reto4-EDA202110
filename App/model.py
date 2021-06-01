@@ -114,7 +114,7 @@ def addCountry(analyzer, country):
         lista = pais['lista']
         lt.addLast(lista,country)
         mp.put(paises,key,pais)
-    print(lista)
+    
 
 def newCountry(name):
     """
