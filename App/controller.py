@@ -50,7 +50,6 @@ def loadData(analyzer):
     vertices = loadVertices(analyzer)
     pais = loadCountrys(analyzer)
     loadConnections(analyzer)
-#    loadConnections(analyzer)
 
     return vertices, pais 
     
@@ -89,6 +88,7 @@ def loadVertices(analyzer):
     for vertice in input_file:
         cont +=1
         model.crearVertices(analyzer, vertice)
+        model.addLandingP(analyzer, vertice)
         if cont == 1:
             primerVertice = vertice 
     return primerVertice

@@ -98,24 +98,24 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-        catalog = controller.init() 
-        rtas = controller.loadData(catalog)
+        analyzer = controller.init() 
+        rtas = controller.loadData(analyzer)
         primerVertice = rtas[0]
         ultimoPais = rtas[1]
-        numCountries = controller.totalLandingPoints(catalog)
-        numLanding = controller.numeroPoints(catalog)
-        numConexiones = controller.totalConexiones(catalog)
+        numCountries = controller.totalLandingPoints(analyzer)
+        numLanding = controller.numeroPoints(analyzer)
+        numConexiones = controller.totalConexiones(analyzer)
 
     #   numConexiones = controller.totalConexiones(catalog)
 
         print('Total de landing points: ' + str(numLanding))
         print('Total de conexiones: '+ str(numConexiones))
         print('Total de Paises: ' + str(numCountries))
-        print('Primer landing points cargados: ' + primerVertice['landing_point_id']
-        +' || '+ primerVertice['name']+ ' || ' + primerVertice['latitude'] + ' || ' + 
+        print('Primer landing point cargado: ' + "id: " + primerVertice['landing_point_id']
+        + ' || ' + "país: " +  primerVertice['name'] + ' || ' + "latitud: " + primerVertice['latitude'] + ' || ' + "longitud: " + 
         primerVertice['longitude'] )
-        print('Ultimo pais cargado: ' + ultimoPais['CountryName'] + ' || ' +
-        ultimoPais['Population'] + ' || ' + ultimoPais['Internet users'])
+        print('Ultimo pais cargado: ' + "pais: " + ultimoPais['CountryName'] + ' || ' + "población: " +
+        ultimoPais['Population'] + ' || ' + "usuarios: " + ultimoPais['Internet users'])
     #    print('Numero total de conexiones: ' + numConexiones)
 
     elif int(inputs[0]) == 2:
@@ -141,7 +141,7 @@ while True:
         print("\n++++++ Req. No. 1 results ... ++++++")
         print("El número total de clústeres presentes en la red es: " + str(respuesta[0]))
         
-        if respuesta[1] == true:
+        if respuesta[1] == rue:
             print("los landing points " + str(lp1) + " y " + str(lp2) + " están en el mismo clúster.")
         else:
             print("los landing points " + str(lp1) + " y " + str(lp2) + " NO están en el mismo clúster.")

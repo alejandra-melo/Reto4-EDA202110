@@ -65,6 +65,9 @@ def newAnalyzer():
         analyzer['countrys'] = mp.newMap(numelements=14000,
                                      maptype='PROBING',
                                      comparefunction=compareIds)
+        analyzer['landing_points'] = mp.newMap(numelements=1280,
+                                     maptype='PROBING',
+                                     comparefunction=compareIds)
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:newAnalyzer')
@@ -120,7 +123,33 @@ def newCountry(name):
     country = { 'name' : name, 'lista': None}
     country['lista'] = lt.newList('ARRAY_LIST')
     return country
+
+
+def addLandingP(analyzer, landing_point):
     
+    lps = analyzer['landing_points']
+    key = landing_point['landing_point_id']
+    esta = mp.contains(lps, key)
+    if esta:
+        entry = mp.get(lps,key)
+        value = me.getValue(entry)
+        lt.addLast(value['lista'], landing_point)
+    else:
+        lp = newLandingP(key)
+        lista = lp['lista']
+        lt.addLast(lista,landing_point)
+        mp.put(lps,key,lp)
+
+
+def newLandingP(id):
+    """
+    Define la estructura de un landing point 
+    """
+    landing_point = { 'id' : id, 'lista': None}
+    landing_point['lista'] = lt.newList('ARRAY_LIST')
+    return landing_point
+
+
 # Funciones de consulta
 
 def numeroPaises(analyzer):
@@ -136,7 +165,6 @@ def numeroPoints(analyzer):
     """
     Retorna el numero de landing points
     """
-
     cont = gr.numVertices(analyzer['connections'])
     return cont
 
@@ -171,8 +199,16 @@ def getClustCom(analyzer, lp1, lp2):
     mismo clúster o no.
     """
     sccs = scc.KosarajuSCC(analyzer["connections"])
-    clusters = scc.sccCount(analyzer["connections"], sccs, lp1)
-    mismo_c = scc.stronglyConnected(sccs, lp1, lp2)
+    #recorrer tabla de landing points y buscar los ids
+
+    for lp in lt.iterator(mp.keySet(analyzer["landing_points"])):
+        if lp1 in lp["name"]:
+            id_lp1 = lp["landing_points"]
+        elif lp2 in lp["name"]:
+            id_lp2 = lp["landing_points"]
+
+    clusters = scc.sccCount(analyzer["connections"], sccs, id_lp1)
+    mismo_c = scc.stronglyConnected(sccs, id_lp1, id_lp2)
 
     return (clusters, mismo_c)
 
