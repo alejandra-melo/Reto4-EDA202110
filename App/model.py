@@ -114,6 +114,7 @@ def addCountry(analyzer, country):
         lista = pais['lista']
         lt.addLast(lista,country)
         mp.put(paises,key,pais)
+        print(key)
     
 
 def newCountry(name):
@@ -202,9 +203,10 @@ def getClustCom(analyzer, lp1, lp2):
     #recorrer tabla de landing points y buscar los ids
 
     for lp in lt.iterator(mp.keySet(analyzer["landing_points"])):
-        if lp1 in lp["name"]:
+        print(lp)
+        if str(lp1) in str(lp["name"]):
             id_lp1 = lp["landing_points"]
-        elif lp2 in lp["name"]:
+        elif str(lp2) in str(lp["name"]):
             id_lp2 = lp["landing_points"]
 
     clusters = scc.sccCount(analyzer["connections"], sccs, id_lp1)
