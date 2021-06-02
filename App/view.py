@@ -26,7 +26,10 @@ import controller
 import threading
 from DISClib.ADT import orderedmap as om
 from DISClib.ADT import list as lt
+from DISClib.ADT import map as mp
 from App import controller
+from DISClib.ADT import stack as st
+from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.ADT import stack
 import time
 import tracemalloc
@@ -90,6 +93,23 @@ def deltaMemory(start_memory, stop_memory):
     delta_memory = delta_memory/1024.0
     return delta_memory
 
+
+def printLandingP (lista):
+    print("Landing points: ")
+    for lp in lt.iterator(lista):
+        datos = mp.get(analyzer["landing_points"], lp)
+        nYp = datos["value"]["lista"]["elements"][0]["name"]
+        id = datos["value"]["lista"]["elements"][0]["landing_point_id"]
+
+        print("Nombre y país: " + str(nYp) + " || " + "Identificador: " + str(id))
+
+def printCaminoCorto (path):
+    while not st.isEmpty(path):
+        edge = st.pop(path)
+        print("  " + edge["vertexA"] + " -> " + edge["vertexB"] + " distancia (km): " + str(edge["weight"]))
+
+
+
 """
 Menu principal
 """
@@ -139,7 +159,7 @@ while True:
               "Memoria [kB]: " + str(delta_memory) + "\n")
 
         print("\n++++++ Req. No. 1 results ... ++++++")
-        print("El número total de clústeres presentes en la red es: " + str(respuesta[0]))
+        #print("El número total de clústeres presentes en la red es: " + str(respuesta[0]))
         
         if respuesta[1] == True:
             print("los landing points " + str(lp1) + " y " + str(lp2) + " están en el mismo clúster.")
@@ -164,12 +184,12 @@ while True:
               "Memoria [kB]: " + str(delta_memory) + "\n")
         
         print("\n++++++ Req. No. 2 results ... ++++++")
-        print("Landing points:")
-        print("Total de cables conectados a dichos landpoints: ")
+        printLandingP(respuesta[0])
+        print("Total de cables conectados a dichos landing points: " + str(respuesta[1]))
 
     elif int(inputs[0]) == 4:
-        paisA = input("País A: ")
-        paisB = input("País B: ")
+        paisA = str(input("País A: "))
+        paisB = str(input("País B: "))
 
         delta_time = -1.0
         delta_memory = -1.0
@@ -188,6 +208,9 @@ while True:
               "Memoria [kB]: " + str(delta_memory) + "\n")
 
         print("\n++++++ Req. No. 3 results ... ++++++")
+        print("Ruta más corta de " + paisA + " a " + paisB + ":")
+        printCaminoCorto(respuesta[0])
+        print("Distancia total (km): " + str(respuesta[1]))
 
     elif int(inputs[0]) == 5:
         delta_time = -1.0

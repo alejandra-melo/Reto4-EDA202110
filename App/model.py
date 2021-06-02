@@ -33,7 +33,9 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Algorithms.Graphs import scc
+from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.ADT.graph import gr
+from DISClib.ADT import stack as st
 from DISClib.Utils import error as error
 assert cf
 
@@ -101,7 +103,6 @@ def crearVertices(analyzer, landing_pointId):
     
 
 def addCountry(analyzer, country):
-    
     paises = analyzer['countrys']
     key = country['CountryName']
     esta = mp.contains(paises, key)
@@ -114,7 +115,7 @@ def addCountry(analyzer, country):
         lista = pais['lista']
         lt.addLast(lista,country)
         mp.put(paises,key,pais)
-        print(key)
+
     
 
 def newCountry(name):
@@ -202,15 +203,16 @@ def getClustCom(analyzer, lp1, lp2):
     sccs = scc.KosarajuSCC(analyzer["connections"])
     #recorrer tabla de landing points y buscar los ids
 
-    for lp in lt.iterator(mp.keySet(analyzer["landing_points"])):
-        print(lp)
-        if str(lp1) in str(lp["name"]):
-            id_lp1 = lp["landing_points"]
-        elif str(lp2) in str(lp["name"]):
-            id_lp2 = lp["landing_points"]
+    for lp in lt.iterator(mp.valueSet(analyzer["landing_points"])):
+        if str(lp1) in str(lp["lista"]["elements"][0]["name"]):
+            id_lp1 = lp["lista"]["elements"][0]["landing_point_id"]
+        elif str(lp2) in str(lp["lista"]["elements"][0]["name"]):
+            id_lp2 = lp["lista"]["elements"][0]["landing_point_id"]
 
     clusters = scc.sccCount(analyzer["connections"], sccs, id_lp1)
+    numero = clusters["idscc"]
     mismo_c = scc.stronglyConnected(sccs, id_lp1, id_lp2)
+    print(numero)
 
     return (clusters, mismo_c)
 
@@ -220,7 +222,20 @@ def getPuntosConex(analyzer):
     identificador) y el total de cables conectados a 
     dichos landing points.
     """
-    pass
+    max = 0
+    lista_max = lt.newList('ARRAY_LIST')
+    
+    for lp in lt.iterator(mp.valueSet(analyzer["landing_points"])):
+        vertex = lp["lista"]["elements"][0]["landing_point_id"]
+        calc_arcos = gr.degree(analyzer["connections"], vertex)
+        if calc_arcos > max:
+            max = calc_arcos
+            lista_max = lt.newList('ARRAY_LIST')
+            lt.addLast(lista_max, vertex)
+        elif calc_arcos == max:
+            lt.addLast(lista_max, vertex)
+
+    return(lista_max, max)
 
 def getRutaMenorDist(analyzer, paisA, paisB):
     """
@@ -228,9 +243,16 @@ def getRutaMenorDist(analyzer, paisA, paisB):
     entre cada par consecutivo de landing points) y la
     distancia total de la ruta.
     """
-    pass
+    #encontrar la capital y cambiar vértice de id a nombre
+    search = djk.Dijkstra(analyzer["connections"], paisA)
+    assert djk.hasPathTo(search, paisB) is True
+    path = djk.pathTo(search, paisB)
+    distancia = djk.distTo(search, paisB)
 
-def getInfraest(analyzer):
+    return (path, distancia)
+
+
+def getInfraesnalyzer():
     """
     """
     pass
