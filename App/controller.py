@@ -29,7 +29,7 @@ import csv
 El controlador se encarga de mediar entre la vista y el modelo.
 """
 
-# Inicialización del Catálogo de libros
+# Inicialización del Catálogo
 
 def init():
     """
@@ -52,8 +52,6 @@ def loadData(analyzer):
     loadConnections(analyzer)
 
     return vertices, pais 
-    
-    
 
 
 def loadConnections(analyzer):
@@ -107,9 +105,6 @@ def loadCountrys(analyzer):
         model.addCountry(analyzer, country)
         ultimo = country 
     return ultimo
-
-
-# Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
 

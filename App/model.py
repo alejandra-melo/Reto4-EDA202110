@@ -26,6 +26,7 @@
 
 
 import config as cf
+import math as mt
 from App import model
 import csv
 from DISClib.ADT import list as lt
@@ -80,7 +81,7 @@ def newAnalyzer():
 # Funciones para agregar informacion al catalogo
 
 
-def addConnection(analyzer, origen, destino,distancia, connection):
+def addConnection(analyzer, origen, destino, distancia, connection):
     """
     Crea conexiones entre landing points (arcos)
     """
@@ -192,7 +193,40 @@ def compareIds(stop, keyvaluestop):
     else:
         return -1
 
+    
+def DistGeoLandP(analyzer, origen, destino):
+    #1)Obtener la latitud y longitud del origen y destino
+    for lps in lt.iterator(mp.valueSet(analyzer["landing_points"])):
+        if str(origen) in str(lps["lista"]["elements"][0]["landing_point_id"]):
+            lat_o = lps["lista"]["elements"][0]["latitude"]
+            long_o = lps["lista"]["elements"][0]["longitude"]
+        if str(destino) in str(lps["lista"]["elements"][0]["landing_point_id"]):
+            lat_d = lps["lista"]["elements"][0]["latitude"]
+            long_d = lps["lista"]["elements"][0]["longitude"]
+
+    #2)Aplicar la función Haversine para calcular las distancias
+    rad = mt.pi/180
+    dif_lat = lat_o - lat_d
+    dif_long = long_o - long_d
+    r_tierra = 6372.795477598
+    a = (mt.sin(rad*dif_lat)/2)**2 + mt.cos(rad*lat_d) * mt.cos(rad*lat_o) * (mt.sin(rad*dif_long)/2)**2
+    distancia = 2 * r_tierra * mt.asin(mt.sqrt(a))
+
+    return(distancia)
+
+
+
+
 # Funciones de ordenamiento
+
+def VNombreaNum(analyzer, lp):
+    
+    for lps in lt.iterator(mp.valueSet(analyzer["landing_points"])):
+        if str(lp) in str(lps["lista"]["elements"][0]["name"]):
+            id_lp = lps["lista"]["elements"][0]["landing_point_id"]
+    
+    return(id_lp)
+
 
 def getClustCom(analyzer, lp1, lp2):
     """
@@ -202,17 +236,17 @@ def getClustCom(analyzer, lp1, lp2):
     """
     sccs = scc.KosarajuSCC(analyzer["connections"])
     #recorrer tabla de landing points y buscar los ids
+    
+    id_lp1 = VNombreaNum(analyzer, lp1)
+    id_lp2 = VNombreaNum(analyzer, lp2)
 
-    for lp in lt.iterator(mp.valueSet(analyzer["landing_points"])):
-        if str(lp1) in str(lp["lista"]["elements"][0]["name"]):
-            id_lp1 = lp["lista"]["elements"][0]["landing_point_id"]
-        elif str(lp2) in str(lp["lista"]["elements"][0]["name"]):
-            id_lp2 = lp["lista"]["elements"][0]["landing_point_id"]
+    #print(id_lp1)
+    #print(id_lp2)
 
     clusters = scc.sccCount(analyzer["connections"], sccs, id_lp1)
-    numero = clusters["idscc"]
+    #numero = clusters["idscc"]
     mismo_c = scc.stronglyConnected(sccs, id_lp1, id_lp2)
-    print(numero)
+    #print(clusters)
 
     return (clusters, mismo_c)
 
@@ -258,7 +292,20 @@ def getInfraesnalyzer():
     pass
 
 def getFallas(analyzer, lp):
-    pass
+    """
+    Se requiere conocer la lista de países que podrían verse
+    afectados al producirse una caída en el proceso de
+    comunicación con dicho landing point; los países afectados
+    son aquellos que cuentan con landing points directamente
+    conectados con el landing point afectado. 
+    """
+    id_lp = VNombreaNum(analyzer, lp)
+    p_afect = gr.adjacents(analyzer["connections"], id_lp)
+    #ordenar la lista según distancia mayor a menor
+    num_p = lt.size(p_afect)
+
+    return(p_afect, num_p)
+
 
 def getMejoresCanales(analyzer, pais, cable):
     pass

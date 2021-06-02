@@ -251,6 +251,9 @@ while True:
               "Memoria [kB]: " + str(delta_memory) + "\n")
 
         print("\n++++++ Req. No. 5 results ... ++++++")
+        print(respuesta[0])
+        print("---")
+        print(respuesta[1])
 
     elif int(inputs[0]) == 7:
         pais = input("Nombre del país: ")
