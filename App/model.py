@@ -25,6 +25,7 @@
  """
 
 
+from DISClib.DataStructures.rbt import keys
 import config as cf
 import math as mt
 from App import model
@@ -34,6 +35,7 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Algorithms.Graphs import scc
+from DISClib.Algorithms.Graphs import prim
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.ADT.graph import gr
 from DISClib.ADT import stack as st
@@ -101,7 +103,38 @@ def crearVertices(analyzer, landing_pointId):
      
     gr.insertVertex(grafo,vertice)
 
-    
+def CapitalEstaEnLP (analyzer, capital):
+    #mirar si está o no la capital en lp
+    encontrado = False
+    for lps in lt.iterator(mp.valueSet(analyzer["landing_points"])):
+        if encontrado == False:
+            if str(capital + ", ") in str(lps["lista"]["elements"][0]["name"]:
+                encontrado = True
+
+    return(encontrado)
+
+def AgregarCapitalEnLP(analyzer):
+    nuevo_id = 19250
+    for country in lt.iterator(mp.valueSet(analyzer["countries"])):
+        c_name = country["lista"]["elements"][0]["CapitalName"]
+        if CapitalEstaEnLP(analyzer, c_name) == False:
+            nuevo_id += 1
+            #lp_cable = nuevo_id + "-" + 
+            #depinir LP-Cable
+            value = lt.newList('ARRAY_LIST')
+            id = country["lista"]["elements"][0]["CountryName"]
+            pais = country["lista"]["elements"][0]["CountryName"]
+            lat = country["lista"]["elements"][0]["CapitalLatitude"]
+            long = country["lista"]["elements"][0]["CapitalLongitude"]
+            d = {}
+            d['landing_point_id'] = nuevo_id
+            d['id'] = id
+            d['name'] = c_name + ", " + pais
+            d['latitude'] = lat
+            d['longitude'] = long
+            lt.addLast(value, d)
+            mp.put(analyzer["landing_points"], nuevo_id, value)
+
 
 def addCountry(analyzer, country):
     paises = analyzer['countrys']
@@ -129,7 +162,7 @@ def newCountry(name):
 
 
 def addLandingP(analyzer, vertice):
-    
+    """
     lps = analyzer['landing_points']
     key = vertice['landing_point_id']
     esta = mp.contains(lps, key)
@@ -142,6 +175,25 @@ def addLandingP(analyzer, vertice):
         lista = lp['lista']
         lt.addLast(lista, vertice)
         mp.put(lps,key,lp)
+    """
+    lps = analyzer['landing_points']
+    value = lt.newList('ARRAY_LIST')
+    #vertice es la linea de info
+    d = {}
+    key = vertice['landing_point_id']
+    id = vertice["id"]
+    name = vertice["name"]
+    lat = vertice["latitude"]
+    long = vertice["longitude"]
+
+    d['landing_point_id'] = key
+    d['id'] = id
+    d['name'] = name
+    d['latitude'] = lat
+    d['longitude'] = long
+    lt.addLast(value, d)
+    mp.put(analyzer["landing_points"], key, value)
+    
 
 
 def newLandingP(id):
@@ -313,10 +365,30 @@ def getRutaMenorDist(analyzer, paisA, paisB):
     return (path, distancia)
 
 
-def getInfraesnalyzer():
+def getInfraesnalyzer(analyzer):
     """
+    Identificar la red de expansión minima en cuanto a
+    distancia que pueda darle cobertura a la mayor cantidad
+    de landing points. Retorna: # de nodos conectados a la
+    red de expansion minima (camino de menor costo que 
+    conecta la mayor cantidad de nodos), costo total de la
+    red de expansión minima y presentar la rama mas larga
+    (mayor numero de arcos entre raiz y la hoja que hace parte
+    de la red de expansion minima).
     """
-    pass
+    mst = prim.PrimMST(analyzer["connections"])
+    valores = gr.edges(mst)
+    num_v = gr.numEdges(mst)
+
+    peso_t = 0
+    for valor in lt.iterator(valores):
+        peso_t += valor
+
+    return(num_v, peso_t)
+
+
+
+
 
 def getFallas(analyzer, lp):
     """
@@ -340,6 +412,4 @@ def getMejoresCanales(analyzer, pais, cable):
 
 def getMejorRuta(analyzer, ip1, ip2):
     pass
-
-
 

@@ -131,8 +131,6 @@ while True:
         numLanding = controller.numeroPoints(analyzer)
         numConexiones = controller.totalConexiones(analyzer)
 
-    #   numConexiones = controller.totalConexiones(catalog)
-
         print('Total de landing points: ' + str(numLanding))
         print('Total de conexiones: '+ str(numConexiones))
         print('Total de Paises: ' + str(numCountries))
@@ -141,9 +139,9 @@ while True:
         primerVertice['longitude'] )
         print('Ultimo pais cargado: ' + "pais: " + ultimoPais['CountryName'] + ' || ' + "población: " +
         ultimoPais['Population'] + ' || ' + "usuarios: " + ultimoPais['Internet users'])
-    #   print('Numero total de conexiones: ' + numConexiones)
-        
 
+        print(analyzer["landing_points"])
+  
     elif int(inputs[0]) == 2:
         lp1 = input("Nombre del landing point 1: ")
         lp2 = input("Nombre del landing point 2: ")
