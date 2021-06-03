@@ -206,10 +206,14 @@ def DistGeoLandP(analyzer, origen, destino):
 
     #2)Aplicar la función Haversine para calcular las distancias
     rad = mt.pi/180
-    dif_lat = lat_o - lat_d
-    dif_long = long_o - long_d
+    f_lat_o = float(lat_o)
+    f_lat_d = float(lat_d)
+    f_long_o = float(long_o)
+    f_long_d = float(long_d)
+    dif_lat = f_lat_o - f_lat_d
+    dif_long = f_long_o - f_long_d
     r_tierra = 6372.795477598
-    a = (mt.sin(rad*dif_lat)/2)**2 + mt.cos(rad*lat_d) * mt.cos(rad*lat_o) * (mt.sin(rad*dif_long)/2)**2
+    a = (mt.sin(rad*dif_lat)/2)**2 + mt.cos(rad*f_lat_d) * mt.cos(rad*f_lat_o) * (mt.sin(rad*dif_long)/2)**2
     distancia = 2 * r_tierra * mt.asin(mt.sqrt(a))
 
     return(distancia)

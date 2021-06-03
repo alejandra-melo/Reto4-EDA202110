@@ -69,8 +69,8 @@ def loadConnections(analyzer):
     for i in input_file:
         origen = i['\ufefforigin']
         destino = i['destination']
-        longitud = i['cable_length']
-        model.addConnection(analyzer, origen, destino, longitud, i)
+        distancia = model.DistGeoLandP(analyzer, origen, destino)
+        model.addConnection(analyzer, origen, destino, distancia, i)
     
 
 
