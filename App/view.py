@@ -24,6 +24,7 @@ import config as cf
 import sys
 import controller
 import threading
+import model
 from DISClib.ADT import orderedmap as om
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -104,10 +105,14 @@ def printLandingP (lista):
         print("Nombre y país: " + str(nYp) + " || " + "Identificador: " + str(id))
 
 def printCaminoCorto (path):
+    print(path)
     while not st.isEmpty(path):
         edge = st.pop(path)
-        print("  " + edge["vertexA"] + " -> " + edge["vertexB"] + " distancia (km): " + str(edge["weight"]))
-
+        id_lp = edge["vertexA"]
+        name_lpA = model.VNumaNombre(analyzer, id_lp)
+        id_lp = edge["vertexB"]
+        name_lpB = model.VNumaNombre(analyzer, id_lp)
+        print("  " + name_lpA + " -> " + name_lpB + "  -- distancia (km): " + str(edge["weight"]))
 
 
 """
@@ -136,7 +141,8 @@ while True:
         primerVertice['longitude'] )
         print('Ultimo pais cargado: ' + "pais: " + ultimoPais['CountryName'] + ' || ' + "población: " +
         ultimoPais['Population'] + ' || ' + "usuarios: " + ultimoPais['Internet users'])
-    #    print('Numero total de conexiones: ' + numConexiones)
+    #   print('Numero total de conexiones: ' + numConexiones)
+        
 
     elif int(inputs[0]) == 2:
         lp1 = input("Nombre del landing point 1: ")
@@ -208,7 +214,7 @@ while True:
               "Memoria [kB]: " + str(delta_memory) + "\n")
 
         print("\n++++++ Req. No. 3 results ... ++++++")
-        print("Ruta más corta de " + paisA + " a " + paisB + ":")
+        print("Ruta más corta de " + paisA + " a " + paisB + ":\n")
         printCaminoCorto(respuesta[0])
         print("Distancia total (km): " + str(respuesta[1]))
 

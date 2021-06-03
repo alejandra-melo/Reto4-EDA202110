@@ -219,8 +219,6 @@ def DistGeoLandP(analyzer, origen, destino):
     return(distancia)
 
 
-
-
 # Funciones de ordenamiento
 
 def VNombreaNum(analyzer, lp):
@@ -228,6 +226,15 @@ def VNombreaNum(analyzer, lp):
     for lps in lt.iterator(mp.valueSet(analyzer["landing_points"])):
         if str(lp) in str(lps["lista"]["elements"][0]["name"]):
             id_lp = lps["lista"]["elements"][0]["landing_point_id"]
+    
+    return(id_lp)
+
+
+def VNumaNombre(analyzer, lp):
+    
+    for lps in lt.iterator(mp.valueSet(analyzer["landing_points"])):
+        if str(lp) in str(lps["lista"]["elements"][0]["landing_point_id"]):
+            id_lp = lps["lista"]["elements"][0]["name"]
     
     return(id_lp)
 
@@ -275,17 +282,33 @@ def getPuntosConex(analyzer):
 
     return(lista_max, max)
 
+def buscaCapital(analyzer, pais):
+    for country in lt.iterator(mp.valueSet(analyzer["countrys"])):
+        if pais == country["lista"]["elements"][0]["CountryName"]:
+            capital = country["lista"]["elements"][0]["CapitalName"]
+
+    return(capital)
+           
+
+
 def getRutaMenorDist(analyzer, paisA, paisB):
     """
     Retorna la ruta (incluir la distancia de conexión [km]
     entre cada par consecutivo de landing points) y la
     distancia total de la ruta.
     """
-    #encontrar la capital y cambiar vértice de id a nombre
-    search = djk.Dijkstra(analyzer["connections"], paisA)
-    assert djk.hasPathTo(search, paisB) is True
-    path = djk.pathTo(search, paisB)
-    distancia = djk.distTo(search, paisB)
+    #encontrar la capital
+    cap_A = buscaCapital(analyzer, paisA)
+    cap_B = buscaCapital(analyzer, paisB)
+
+    #encontrar landing_point de la capital y lo devuelve como id
+    vertixA = VNombreaNum(analyzer, cap_A)
+    vertixB = VNombreaNum(analyzer, cap_B)
+
+    search = djk.Dijkstra(analyzer["connections"], vertixA)
+    assert djk.hasPathTo(search, vertixB) is True
+    path = djk.pathTo(search, vertixB)
+    distancia = djk.distTo(search, vertixB)
 
     return (path, distancia)
 
@@ -305,8 +328,9 @@ def getFallas(analyzer, lp):
     """
     id_lp = VNombreaNum(analyzer, lp)
     p_afect = gr.adjacents(analyzer["connections"], id_lp)
+    dist_p = gr.adjacentEdges(analyzer["connections"], id_lp)
     #ordenar la lista según distancia mayor a menor
-    num_p = lt.size(p_afect)
+    num_p = gr.degree(analyzer["connections"], id_lp)
 
     return(p_afect, num_p)
 
