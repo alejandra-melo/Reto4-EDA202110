@@ -140,7 +140,6 @@ while True:
         print('Ultimo pais cargado: ' + "pais: " + ultimoPais['CountryName'] + ' || ' + "población: " +
         ultimoPais['Population'] + ' || ' + "usuarios: " + ultimoPais['Internet users'])
 
-        print(analyzer["landing_points"])
   
     elif int(inputs[0]) == 2:
         lp1 = input("Nombre del landing point 1: ")
