@@ -31,6 +31,7 @@ import math as mt
 from App import model
 import csv
 from DISClib.ADT import list as lt
+from DISClib.DataStructures import arraylist as alt
 from DISClib.ADT import map as mp
 from DISClib.ADT import queue as q
 from DISClib.DataStructures import mapentry as me
@@ -83,7 +84,7 @@ def newAnalyzer():
 
 # Funciones para agregar informacion al catalogo
 
-def addConnection(analyzer, origen, destino, distancia, connection):
+def addConnection(analyzer, origen, destino, distancia):
     """
     Crea conexiones entre landing points (arcos)
     """
@@ -141,7 +142,37 @@ def AgregarCapital(analyzer):
 
 def conexionCapital(analyzer, country):
     pass
+
+def unirVertLp(analyzer): 
+    """
+    Para cada landing point se recuperan todos los vértices del
+    mismo landing point con diferente cable. 
+    """  
+    vert = gr.vertices(analyzer["connections"]) 
     
+    for lp in lt.iterator(mp.valueSet(analyzer["landing_points"])):
+        print(" ===> LP ")
+        print(lp)
+
+        v_lp = lt.newList('SINGLE_LINKED')
+        for v in lt.iterator(vert):
+            print("   ===> V ")
+            print(v)
+            num = str.split(v,"-")
+            print(num[0])
+            if lp["elements"][0]["landing_point_id"] == num[0]:
+                v_lp = lt.addLast(v_lp, v)
+        
+        print(v_lp)
+        pos = 0
+        print(type(v_lp))
+        tam = lt.size(v_lp)
+        #tam = v_lp['size']
+       
+        while pos < tam and tam > 1:
+            gr.addEdge(analyzer["connections"], v_lp[pos], v_lp[pos+1], weight=0.1) 
+            pos += 1
+        gr.addEdge(analyzer["connections"], v_lp[0], v_lp[(tam-1)], weight=0.1)
 
 
 def addCountry(analyzer, country):
@@ -285,19 +316,30 @@ def getClustCom(analyzer, lp1, lp2):
     sccs = scc.KosarajuSCC(analyzer["connections"])
 
     #recorrer tabla de landing points y buscar los ids
-    
     id_lp1 = VNombreaNum(analyzer, lp1)
     id_lp2 = VNombreaNum(analyzer, lp2)
+    vert = gr.vertices(analyzer["connections"])
+    e1 = False
+    e2 = False
 
-    print(type(id_lp1))
-    print(type(id_lp2))
+    for v in lt.iterator(vert):
+        if e1 == True and e2 == True:
+            break
+        num = str.split(v,"-")
+        if id_lp1 == num[0]:
+            vertice1 = v
+            e1 = True
+        elif id_lp2 == num[0]:
+            vertice2 = v 
+            e2 = True
+
+    print(vertice1)
+    print(vertice2)
 
     clusters = scc.connectedComponents(sccs)
+    mismo_c = scc.stronglyConnected(sccs, vertice1, vertice2)
 
-    #mismo_c = scc.stronglyConnected(sccs, id_lp1, id_lp2)
-    print(clusters)
-
-    return (clusters)
+    return (clusters, mismo_c)
 
 def getPuntosConex(analyzer):
     """
@@ -370,17 +412,13 @@ def getInfraest(analyzer):
     mst = prim.PrimMST(analyzer["connections"])
     #valores = gr.edges(mst)
     #num_v = q.size(mst["mst"])
-    num_v = gr.numEdges(mst['edgeTo'])
-    print(num_v)
+    #num_v = gr.numEdges(mst['edgeTo'])
+    peso = prim.weightMST(analyzer["connections"], mst)
+    print(peso)
     #print(mst)
     print(mst["mst"])
 
-
-    peso_t = 0
-    for valor in lt.iterator(valores):
-        peso_t += valor
-
-    return(num_v, peso_t)
+    return(num_v, peso)
 
 
 def getFallas(analyzer, lp):

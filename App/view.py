@@ -163,7 +163,7 @@ while True:
               "Memoria [kB]: " + str(delta_memory) + "\n")
 
         print("\n++++++ Req. No. 1 results ... ++++++")
-        #print("El número total de clústeres presentes en la red es: " + str(respuesta[0]))
+        print("El número total de clústeres presentes en la red es: " + str(respuesta[0]))
         
         if respuesta[1] == True:
             print("los landing points " + str(lp1) + " y " + str(lp2) + " están en el mismo clúster.")

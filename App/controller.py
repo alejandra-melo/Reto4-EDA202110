@@ -75,7 +75,8 @@ def loadConnections(analyzer):
         model.crearVertices(analyzer, i, ori)
         model.crearVertices(analyzer, i, dest)
         distancia = model.DistGeoLandP(analyzer, ori, dest)
-        model.addConnection(analyzer, origen, destino, distancia, i)
+        model.addConnection(analyzer, origen, destino, distancia)
+    model.unirVertLp(analyzer)
     
 
 
