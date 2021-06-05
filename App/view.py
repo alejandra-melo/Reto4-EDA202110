@@ -106,7 +106,6 @@ def printLandingP(lista):
 
 
 def printCaminoCorto (path):
-    print(path)
     while not st.isEmpty(path):
         edge = st.pop(path)
         id_lp = edge["vertexA"]

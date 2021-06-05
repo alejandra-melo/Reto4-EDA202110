@@ -116,7 +116,6 @@ def CapitalEstaEnLP(analyzer, capital):
     return(encontrado)
 
 def AgregarCapital(analyzer):
-    print("Agregar Capital")
     nuevo_id = 19250
     for country in lt.iterator(mp.valueSet(analyzer["countrys"])):
         c_name = country["elements"][0]["CapitalName"]
@@ -134,39 +133,32 @@ def AgregarCapital(analyzer):
             d['latitude'] = lat
             d['longitude'] = long
             lt.addLast(value, d)
-            print("Inserta CAPITAL")
-            print(nuevo_id, value)
             nuevo_ids = str(nuevo_id)
-            print(nuevo_ids)
-            
             mp.put(analyzer["landing_points"], nuevo_ids, value)
-            print("inserta en hash .... ")
             gr.insertVertex(analyzer["connections"], nuevo_ids)
-            print("inserta en grafo")
             model.conexionCapital(analyzer, pais, nuevo_ids)
-            print("SALGO DE AGREGAR CAPITAL")
-
 
 def conexionCapital(analyzer, pais, nuevo_id):
-    print("ENTRO EN CONEXION CAPITAL")
+    
     for lp in lt.iterator(mp.valueSet(analyzer["landing_points"])):
         lp_id = lp["elements"][0]["landing_point_id"]
         nombre = lp["elements"][0]["name"]
         n_nom = lt.newList('SINGLE LINKED')
         lt.addLast(n_nom, str.split(nombre, ","))
         pais_lp = lt.lastElement(n_nom)
+        
         if pais_lp == pais:
-            print("encuentra PAIS")
+            print("ENTRA IF 1")
             dist = model.DistGeoLandP(analyzer, nuevo_id, lp_id)
-
             vert = gr.vertices(analyzer["connections"])
             v_lp = lt.newList('SINGLE_LINKED')
             for v in lt.iterator(vert):
+                print("for 2")
                 num = str.split(v,"-")
                 if lp_id == num[0]:
+                    print("if 2")
                     lt.addLast(v_lp, v)
                     gr.addEdge(analyzer["connections"], nuevo_id, v, weight= dist)
-    print("SALGO DEF CONEXION CAPITAL")
         
 
 def unirVertLp(analyzer): 
@@ -222,7 +214,6 @@ def addCountry(analyzer, country):
     lt.addLast(value, d)
     mp.put(paises, key, value)
         
-
    
 def addLandingP(analyzer, vertice):
     lps = analyzer['landing_points']
@@ -259,7 +250,7 @@ def numeroPoints(analyzer):
     """
     Retorna el numero de landing points
     """
-    cont = gr.numVertices(analyzer['connections'])
+    cont = mp.size(analyzer['landing_points'])
     return cont
 
 def totalConexiones(analyzer):
@@ -411,20 +402,51 @@ def getRutaMenorDist(analyzer, paisA, paisB):
     cap_B = buscaCapital(analyzer, paisB)
 
     print("CAPITALES")
-    print(cap_A, cap_B)
-
+ 
     #encontrar landing_point de la capital y lo devuelve como id
-    vertixA = VNombreaNum(analyzer, cap_A)
-    vertixB = VNombreaNum(analyzer, cap_B)
+    vertA = VNombreaNum(analyzer, cap_A)
+    vertB = VNombreaNum(analyzer, cap_B)
+    e1 = False
+    e2 = False
+    vertixA = str(vertA)
+    vertixB = str(vertB)
+    print("LANDING POINT IDS DE CAPITALES ======")
+    print(vertA, vertB)
+    vert = gr.vertices(analyzer["connections"])
+    for v in lt.iterator(vert):
+        if v == vertixA:
+            print("ENCONTRE VERTICE A")
+            print(v)
+            lista = gr.adjacents(analyzer["connections"], vertixA)
+            print(lista)
+        if e1 == True and e2 == True:
+            break
+        num = str.split(v,"-")
+        if vertA == num[0]:
+            vertixA = str(v)
+            e1 = True
+        elif vertB == num[0]:
+            vertixB = str(v)
+            e2 = True
+    vertixA='4315-GlobeNet'
+    lista = gr.adjacents(analyzer["connections"], vertixA)
+    print(lista)
 
-    print("VERTICES")
+    print("VERTICES PARA CALCULO DE MENOR RUTA ......")
     print(vertixA, vertixB)
-    search = djk.Dijkstra(analyzer["connections"], vertixA)
-    assert djk.hasPathTo(search, vertixB) is True
-    path = djk.pathTo(search, vertixB)
-    distancia = djk.distTo(search, vertixB)
 
-    return (path, distancia)
+    
+
+    dij = djk.Dijkstra(analyzer["connections"], vertixA)
+    # dij['type'] == "ADJ_LIST"
+    print("hola, 425")
+    print(type(dij))
+
+    assert (djk.hasPathTo(dij, vertixB) is True)
+    path = djk.pathTo(dij, vertixB)
+    distancia = djk.distTo(dij, vertixB)
+    print("SALGO RUTA MENOR ")
+    return(path, distancia)
 
 
 def getInfraest(analyzer):

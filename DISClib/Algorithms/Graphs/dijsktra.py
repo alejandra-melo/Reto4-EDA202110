@@ -58,7 +58,7 @@ def Dijkstra(graph, source):
                 for edge in lt.iterator(edges):
                     relax(search, edge)
         return search
-    except Exception as exp:
+    except Exception as exp: 
         error.reraise(exp, 'dks:dijkstra')
 
 

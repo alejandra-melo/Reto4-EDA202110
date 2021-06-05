@@ -83,7 +83,7 @@ def loadConnections(analyzer):
 
 def loadVertices(analyzer):
     """
-    Carga los vertices del archivo.
+    Carga archivo Landing_Points.
     """
 
     etiquetasfile = cf.data_dir + 'landing_points.csv'
