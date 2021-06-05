@@ -72,14 +72,12 @@ def newAnalyzer():
         analyzer['countrys'] = mp.newMap(numelements=300,
                                      maptype='PROBING',
                                      comparefunction=compareIds)
-        analyzer['landing_points'] = mp.newMap(numelements=1680,
+        analyzer['landing_points'] = mp.newMap(numelements=2000,
                                      maptype='PROBING',
                                      comparefunction=compareIds)
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:newAnalyzer')
-         
-
     
 
 # Funciones para agregar informacion al catalogo
@@ -112,22 +110,23 @@ def CapitalEstaEnLP(analyzer, capital):
     encontrado = False
     for lps in lt.iterator(mp.valueSet(analyzer["landing_points"])):
         if encontrado == False:
-            if str(capital + ", ") in str(lps["lista"]["elements"][0]["name"]):
+            if str(capital + ", ") in str(lps["elements"][0]["name"]):
                 encontrado = True
 
     return(encontrado)
 
 def AgregarCapital(analyzer):
+    print("Agregar Capital")
     nuevo_id = 19250
-    for country in lt.iterator(mp.valueSet(analyzer["countries"])):
-        c_name = country["lista"]["elements"][0]["CapitalName"]
+    for country in lt.iterator(mp.valueSet(analyzer["countrys"])):
+        c_name = country["elements"][0]["CapitalName"]
         if CapitalEstaEnLP(analyzer, c_name) == False:
             nuevo_id += 1
             value = lt.newList('ARRAY_LIST')
-            id = country["lista"]["elements"][0]["CountryName"]
-            pais = country["lista"]["elements"][0]["CountryName"]
-            lat = country["lista"]["elements"][0]["CapitalLatitude"]
-            long = country["lista"]["elements"][0]["CapitalLongitude"]
+            id = country["elements"][0]["CountryName"]
+            pais = country["elements"][0]["CountryName"]
+            lat = country["elements"][0]["CapitalLatitude"]
+            long = country["elements"][0]["CapitalLongitude"]
             d = {}
             d['landing_point_id'] = nuevo_id
             d['id'] = id
@@ -135,13 +134,40 @@ def AgregarCapital(analyzer):
             d['latitude'] = lat
             d['longitude'] = long
             lt.addLast(value, d)
-            mp.put(analyzer["landing_points"], nuevo_id, value)
-            gr.insertVertex(analyzer["connections"], nuevo_id)
-            conexionCapital(analyzer, country)
+            print("Inserta CAPITAL")
+            print(nuevo_id, value)
+            nuevo_ids = str(nuevo_id)
+            print(nuevo_ids)
+            
+            mp.put(analyzer["landing_points"], nuevo_ids, value)
+            print("inserta en hash .... ")
+            gr.insertVertex(analyzer["connections"], nuevo_ids)
+            print("inserta en grafo")
+            model.conexionCapital(analyzer, pais, nuevo_ids)
+            print("SALGO DE AGREGAR CAPITAL")
 
 
-def conexionCapital(analyzer, country):
-    pass
+def conexionCapital(analyzer, pais, nuevo_id):
+    print("ENTRO EN CONEXION CAPITAL")
+    for lp in lt.iterator(mp.valueSet(analyzer["landing_points"])):
+        lp_id = lp["elements"][0]["landing_point_id"]
+        nombre = lp["elements"][0]["name"]
+        n_nom = lt.newList('SINGLE LINKED')
+        lt.addLast(n_nom, str.split(nombre, ","))
+        pais_lp = lt.lastElement(n_nom)
+        if pais_lp == pais:
+            print("encuentra PAIS")
+            dist = model.DistGeoLandP(analyzer, nuevo_id, lp_id)
+
+            vert = gr.vertices(analyzer["connections"])
+            v_lp = lt.newList('SINGLE_LINKED')
+            for v in lt.iterator(vert):
+                num = str.split(v,"-")
+                if lp_id == num[0]:
+                    lt.addLast(v_lp, v)
+                    gr.addEdge(analyzer["connections"], nuevo_id, v, weight= dist)
+    print("SALGO DEF CONEXION CAPITAL")
+        
 
 def unirVertLp(analyzer): 
     """
@@ -155,15 +181,11 @@ def unirVertLp(analyzer):
         for v in lt.iterator(vert):
             num = str.split(v,"-")
             if lp["elements"][0]["landing_point_id"] == num[0]:
-                print("****** LO ENCONTRE *******")
                 lt.addLast(v_lp, v)
         
         pos = 0
         tam = lt.size(v_lp)
-        print("TAMAÑÑÑO")
-        print(tam)
-        #tam = v_lp['size']
-       
+          
         if tam > 1:
             while pos < tam:
                 vertexA = lt.getElement(v_lp,pos)
@@ -212,7 +234,7 @@ def addLandingP(analyzer, vertice):
     name = vertice["name"]
     lat = vertice["latitude"]
     long = vertice["longitude"]
-
+    
     d['landing_point_id'] = key
     d['id'] = id
     d['name'] = name
@@ -291,7 +313,8 @@ def DistGeoLandP(analyzer, origen, destino):
 # Funciones de ordenamiento
 
 def VNombreaNum(analyzer, lp):
-    
+    print("VNombreaNum")
+    print(lp)
     for lps in lt.iterator(mp.valueSet(analyzer["landing_points"])):
         if str(lp) in str(lps["elements"][0]["name"]):
             id_lp = lps["elements"][0]["landing_point_id"]
@@ -370,8 +393,8 @@ def getPuntosConex(analyzer):
 
 def buscaCapital(analyzer, pais):
     for country in lt.iterator(mp.valueSet(analyzer["countrys"])):
-        if pais == country["lista"]["elements"][0]["CountryName"]:
-            capital = country["lista"]["elements"][0]["CapitalName"]
+        if pais == country["elements"][0]["CountryName"]:
+            capital = country["elements"][0]["CapitalName"]
 
     return(capital)
            
@@ -387,10 +410,15 @@ def getRutaMenorDist(analyzer, paisA, paisB):
     cap_A = buscaCapital(analyzer, paisA)
     cap_B = buscaCapital(analyzer, paisB)
 
+    print("CAPITALES")
+    print(cap_A, cap_B)
+
     #encontrar landing_point de la capital y lo devuelve como id
     vertixA = VNombreaNum(analyzer, cap_A)
     vertixB = VNombreaNum(analyzer, cap_B)
 
+    print("VERTICES")
+    print(vertixA, vertixB)
     search = djk.Dijkstra(analyzer["connections"], vertixA)
     assert djk.hasPathTo(search, vertixB) is True
     path = djk.pathTo(search, vertixB)

@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+from App.model import AgregarCapital
 import config as cf
 import model
 import csv
@@ -50,6 +51,7 @@ def loadData(analyzer):
     vertices = loadVertices(analyzer)
     pais = loadCountrys(analyzer)
     loadConnections(analyzer)
+    AgregarCapital(analyzer)
 
     return vertices, pais 
 
@@ -78,7 +80,6 @@ def loadConnections(analyzer):
         model.addConnection(analyzer, origen, destino, distancia)
     model.unirVertLp(analyzer)
     
-
 
 def loadVertices(analyzer):
     """
