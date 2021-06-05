@@ -151,28 +151,29 @@ def unirVertLp(analyzer):
     vert = gr.vertices(analyzer["connections"]) 
     
     for lp in lt.iterator(mp.valueSet(analyzer["landing_points"])):
-        print(" ===> LP ")
-        print(lp)
-
         v_lp = lt.newList('SINGLE_LINKED')
         for v in lt.iterator(vert):
-            print("   ===> V ")
-            print(v)
             num = str.split(v,"-")
-            print(num[0])
             if lp["elements"][0]["landing_point_id"] == num[0]:
-                v_lp = lt.addLast(v_lp, v)
+                print("****** LO ENCONTRE *******")
+                lt.addLast(v_lp, v)
         
-        print(v_lp)
         pos = 0
-        print(type(v_lp))
         tam = lt.size(v_lp)
+        print("TAMAÑÑÑO")
+        print(tam)
         #tam = v_lp['size']
        
-        while pos < tam and tam > 1:
-            gr.addEdge(analyzer["connections"], v_lp[pos], v_lp[pos+1], weight=0.1) 
-            pos += 1
-        gr.addEdge(analyzer["connections"], v_lp[0], v_lp[(tam-1)], weight=0.1)
+        if tam > 1:
+            while pos < tam:
+                vertexA = lt.getElement(v_lp,pos)
+                vertexB = lt.getElement(v_lp,pos+1)
+                gr.addEdge(analyzer["connections"], vertexA, vertexB, weight=0.1) 
+                pos += 1
+            if tam > 2:
+                vertexA = lt.getElement(v_lp,0)
+                vertexB = lt.getElement(v_lp,tam-1)
+                gr.addEdge(analyzer["connections"], vertexA, vertexB, weight=0.1)
 
 
 def addCountry(analyzer, country):
