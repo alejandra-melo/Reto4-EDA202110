@@ -95,14 +95,15 @@ def deltaMemory(start_memory, stop_memory):
     return delta_memory
 
 
-def printLandingP (lista):
+def printLandingP(lista):
     print("Landing points: ")
-    for lp in lt.iterator(lista):
-        datos = mp.get(analyzer["landing_points"], lp)
-        nYp = datos["value"]["lista"]["elements"][0]["name"]
-        id = datos["value"]["lista"]["elements"][0]["landing_point_id"]
+    for elem in lt.iterator(lista):
+        for lp in lt.iterator(mp.valueSet(analyzer["landing_points"])):
+            if lp["elements"][0]["landing_point_id"] in elem:
+                nYp = lp["elements"][0]["name"]
+                id = lp["elements"][0]["landing_point_id"]
+                print("Nombre y país: " + str(nYp) + " || " + "Identificador: " + str(id))
 
-        print("Nombre y país: " + str(nYp) + " || " + "Identificador: " + str(id))
 
 def printCaminoCorto (path):
     print(path)

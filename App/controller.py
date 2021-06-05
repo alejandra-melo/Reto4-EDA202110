@@ -72,8 +72,9 @@ def loadConnections(analyzer):
         dest = i['destination']
         origen = ori + "-" + cable
         destino = dest + "-" + cable
-        model.crearVertices(analyzer, i)
-        distancia = model.DistGeoLandP(analyzer, origen, destino)
+        model.crearVertices(analyzer, i, ori)
+        model.crearVertices(analyzer, i, dest)
+        distancia = model.DistGeoLandP(analyzer, ori, dest)
         model.addConnection(analyzer, origen, destino, distancia, i)
     
 

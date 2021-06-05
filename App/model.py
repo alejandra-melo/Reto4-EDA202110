@@ -32,6 +32,7 @@ from App import model
 import csv
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
+from DISClib.ADT import queue as q
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Algorithms.Graphs import scc
@@ -82,7 +83,6 @@ def newAnalyzer():
 
 # Funciones para agregar informacion al catalogo
 
-
 def addConnection(analyzer, origen, destino, distancia, connection):
     """
     Crea conexiones entre landing points (arcos)
@@ -96,10 +96,10 @@ def addConnection(analyzer, origen, destino, distancia, connection):
 
 # Funciones para creacion de datos
 
-def crearVertices(analyzer, i):
+def crearVertices(analyzer, i, ori):
     
     grafo = analyzer['connections']
-    id = i["origin"]
+    id = ori
     cable = i["cable_name"]
     vertice = id + "-" + cable
     if gr.containsVertex(grafo, vertice) != True:
@@ -283,20 +283,21 @@ def getClustCom(analyzer, lp1, lp2):
     mismo clúster o no.
     """
     sccs = scc.KosarajuSCC(analyzer["connections"])
+
     #recorrer tabla de landing points y buscar los ids
     
     id_lp1 = VNombreaNum(analyzer, lp1)
     id_lp2 = VNombreaNum(analyzer, lp2)
 
-    #print(id_lp1)
-    #print(id_lp2)
+    print(type(id_lp1))
+    print(type(id_lp2))
 
-    clusters = scc.sccCount(analyzer["connections"], sccs, id_lp1)
-    #numero = clusters["idscc"]
-    mismo_c = scc.stronglyConnected(sccs, id_lp1, id_lp2)
-    #print(clusters)
+    clusters = scc.connectedComponents(sccs)
 
-    return (clusters, mismo_c)
+    #mismo_c = scc.stronglyConnected(sccs, id_lp1, id_lp2)
+    print(clusters)
+
+    return (clusters)
 
 def getPuntosConex(analyzer):
     """
@@ -304,20 +305,25 @@ def getPuntosConex(analyzer):
     identificador) y el total de cables conectados a 
     dichos landing points.
     """
+    vert = gr.vertices(analyzer["connections"]) 
     max = 0
     lista_max = lt.newList('ARRAY_LIST')
-    
     for lp in lt.iterator(mp.valueSet(analyzer["landing_points"])):
-        vertex = lp["elements"][0]["landing_point_id"]
-        calc_arcos = gr.degree(analyzer["connections"], vertex)
-        if calc_arcos > max:
-            max = calc_arcos
+        l_v = lt.newList('ARRAY_LIST')
+        for v in lt.iterator(vert):
+            num = str.split(v,"-")
+            if lp["elements"][0]["landing_point_id"] == num[0]:
+                lt.addLast(l_v, v)
+        calc_cables = lt.size(l_v)
+        if calc_cables > max:
+            max = calc_cables
             lista_max = lt.newList('ARRAY_LIST')
-            lt.addLast(lista_max, vertex)
-        elif calc_arcos == max:
-            lt.addLast(lista_max, vertex)
+            lt.addLast(lista_max, lp["elements"][0]["landing_point_id"])
+        elif calc_cables == max:
+            lt.addLast(lista_max, lp["elements"][0]["landing_point_id"])
 
     return(lista_max, max)
+        
 
 def buscaCapital(analyzer, pais):
     for country in lt.iterator(mp.valueSet(analyzer["countrys"])):
@@ -350,7 +356,7 @@ def getRutaMenorDist(analyzer, paisA, paisB):
     return (path, distancia)
 
 
-def getInfraesnalyzer(analyzer):
+def getInfraest(analyzer):
     """
     Identificar la red de expansión minima en cuanto a
     distancia que pueda darle cobertura a la mayor cantidad
@@ -362,8 +368,13 @@ def getInfraesnalyzer(analyzer):
     de la red de expansion minima).
     """
     mst = prim.PrimMST(analyzer["connections"])
-    valores = gr.edges(mst)
-    num_v = gr.numEdges(mst)
+    #valores = gr.edges(mst)
+    #num_v = q.size(mst["mst"])
+    num_v = gr.numEdges(mst['edgeTo'])
+    print(num_v)
+    #print(mst)
+    print(mst["mst"])
+
 
     peso_t = 0
     for valor in lt.iterator(valores):
