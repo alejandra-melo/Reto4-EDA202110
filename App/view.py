@@ -32,6 +32,9 @@ from App import controller
 from DISClib.ADT import stack as st
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.ADT import stack
+from DISClib.ADT.graph import gr
+from DISClib.Algorithms.Sorting import quicksort as qs
+
 import time
 import tracemalloc
 assert cf
@@ -120,6 +123,26 @@ def printCaminoCorto(path):
             print("  " + name_lpA + " -> " + name_lpB + "  -- distancia (km): " +
                    str(edge["weight"]))
 
+def printPaises(grafo):
+    distancias = gr.edges(grafo)
+    paises = gr.vertices(grafo)
+    orden = qs.sort(distancias, compare)
+    print(distancias)
+    print("OOOO")
+    print(orden)
+
+
+
+def compare(elem1, elem2):
+    """
+    Compara 
+    """
+    if (str(elem1) == str(elem2)):
+        return 0
+    elif str(elem1)> str(elem2):
+        return 1
+    else:
+        return -1
 
 """
 Menu principal
@@ -260,9 +283,8 @@ while True:
               "Memoria [kB]: " + str(delta_memory) + "\n")
 
         print("\n++++++ Req. No. 5 results ... ++++++")
-        #print(respuesta[0])
-        print("---")
-        #print(respuesta[1])
+        printPaises(respuesta)
+        
 
     elif int(inputs[0]) == 7:
         pais = input("Nombre del país: ")

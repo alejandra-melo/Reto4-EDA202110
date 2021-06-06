@@ -455,15 +455,13 @@ def getInfraest(analyzer):
     return(num_v, peso)
 
 
-def getFallas(analyzer, lp):
+def getFallas(analyzer, lpe):
     """
-    Se requiere conocer la lista de países que podrían verse
-    afectados al producirse una caída en el proceso de
-    comunicación con dicho landing point; los países afectados
-    son aquellos que cuentan con landing points directamente
+    Se requiere conocer la lista de países que podrían verse afectados al
+    producirse una caída en el proceso de comunicación con dicho landing point;
+    los países afectados son aquellos que cuentan con landing points directamente
     conectados con el landing point afectado. 
     """
-    
     #Se define grafo temporal para carga de datos
     g_pais = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
@@ -471,11 +469,10 @@ def getFallas(analyzer, lp):
                                               comparefunction=compareIds)
 
     #Recupera id del LP a partir del LP de entrada
-    id_lp = VNombreaNum(analyzer, lp)
-     
+    id_lp = VNombreaNum(analyzer, lpe)
     #Recupera todos los vertices del LP de entrada
     nom_v_lp = numaVertLp(analyzer, id_lp)
-    gr.insertVertex(g_pais, lp)
+    gr.insertVertex(g_pais, lpe)
   
     for v_a in lt.iterator(nom_v_lp):
         #Recupera los vertices adyacentes de cada vertice del LP
@@ -483,7 +480,6 @@ def getFallas(analyzer, lp):
         vert_adj = gr.adjacents(analyzer["connections"], v_a)
         vertixA = v_a
         for v_b in lt.iterator(vert_adj): 
-            print(v_b)
             vertixB = v_b
             #Recupera arco de cada vertice adyacente
             arco = gr.getEdge(analyzer["connections"], vertixA, vertixB)
@@ -496,23 +492,20 @@ def getFallas(analyzer, lp):
                     p = str.split(name, ", ")
                     tam = len(p)
                     pais = p[tam-1]
-            
+                    
             if gr.containsVertex(g_pais, pais) != True:
                 gr.insertVertex(g_pais, pais)
-                print("FALTA CREAR ARCO LP A PAIS")
-                #gr.addEdge(g_pais,vertixA,pais,dist_new)
-                
+                gr.addEdge(g_pais,lpe,pais,int(dist_new))
             else:
                 #Recupera peso arco existente en grafo
-                print("FALTA RECUPERAR PESO ARCO EXISTENTE ENTRE LP Y PAIS PARA COMPARAR")
-                dist_ant = 0
-                #arco = gr.getEdge(g_pais, vertixA, pais)
-                #dist_ant = arco["weight"]
+                arco = gr.getEdge(g_pais, lpe, pais)
+                dist_ant = arco["weight"]
                 if dist_new < dist_ant:
-                    print("HAY QUE CAMBIAR PESO DEL ARCO")
-    print("TERMINAMOS")
-    print(gr.vertices(g_pais))
-    print(gr.edges(g_pais))
+                    #Borrar el vértice y volverlo a crear con el nuevo arco
+                    gr.removeVertex(g_pais, pais)
+                    gr.insertVertex(g_pais, pais)
+                    gr.addEdge(g_pais,lpe,pais,int(dist_new))
+                    
     return(g_pais)
 
 
