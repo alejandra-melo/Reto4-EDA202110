@@ -52,7 +52,7 @@ def printMenu():
     print("1- Cargar información en el catálogo")
     print("2- Identificar los clústeres de comunicación (req. 1)")
     print("3- Identificar los puntos de conexión críticos de la red (req. 2)")
-    print("4- Ruta de menor distancia (req. 3)")
+    print("4- Ruta de menor distancia entre dos países (req. 3)")
     print("5- Identificar la infraestructura crítica de la red (req. 4)")
     print("6- Análisis de fallas (req. 5)")
     print("7- Mejores canales para transmitir (req. 6)")

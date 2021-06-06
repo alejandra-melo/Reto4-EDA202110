@@ -472,28 +472,23 @@ def getFallas(analyzer, lp):
 
     #Recupera id del LP a partir del LP de entrada
     id_lp = VNombreaNum(analyzer, lp)
-    print("ID LANDING PONT : " + id_lp) 
+     
     #Recupera todos los vertices del LP de entrada
     nom_v_lp = numaVertLp(analyzer, id_lp)
-    print("VERTICES DEL LANDING POINT")  
-    
     gr.insertVertex(g_pais, lp)
   
     for v_a in lt.iterator(nom_v_lp):
-        print(v_a)
         #Recupera los vertices adyacentes de cada vertice del LP
         vert_adj = lt.newList("SINGLE LINKED")
         vert_adj = gr.adjacents(analyzer["connections"], v_a)
         vertixA = v_a
-        print("ADYACENTES .....")
         for v_b in lt.iterator(vert_adj): 
             print(v_b)
             vertixB = v_b
-            #Recupera arco vertixA to vertixB
+            #Recupera arco de cada vertice adyacente
             arco = gr.getEdge(analyzer["connections"], vertixA, vertixB)
             dist_new = arco["weight"]
-            print(dist_new)
-            #Recupera pais de VertixB
+            #Recupera pais de vertice adyacente
             id_v_adj = str.split(vertixB,"-")
             for lp in lt.iterator(mp.valueSet(analyzer["landing_points"])):            
                 if lp["elements"][0]["landing_point_id"] == id_v_adj[0]:
@@ -501,15 +496,17 @@ def getFallas(analyzer, lp):
                     p = str.split(name, ", ")
                     tam = len(p)
                     pais = p[tam-1]
-            print("PAIS "+pais)
+            
             if gr.containsVertex(g_pais, pais) != True:
                 gr.insertVertex(g_pais, pais)
+                print("FALTA CREAR ARCO LP A PAIS")
                 #gr.addEdge(g_pais,vertixA,pais,dist_new)
                 
             else:
                 #Recupera peso arco existente en grafo
+                print("FALTA RECUPERAR PESO ARCO EXISTENTE ENTRE LP Y PAIS PARA COMPARAR")
+                dist_ant = 0
                 #arco = gr.getEdge(g_pais, vertixA, pais)
-                dist_ant = 100
                 #dist_ant = arco["weight"]
                 if dist_new < dist_ant:
                     print("HAY QUE CAMBIAR PESO DEL ARCO")
