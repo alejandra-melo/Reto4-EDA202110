@@ -139,26 +139,40 @@ def AgregarCapital(analyzer):
             model.conexionCapital(analyzer, pais, nuevo_ids)
 
 def conexionCapital(analyzer, pais, nuevo_id):
-    
+    vert = gr.vertices(analyzer["connections"])
     for lp in lt.iterator(mp.valueSet(analyzer["landing_points"])):
-        lp_id = lp["elements"][0]["landing_point_id"]
+        lp_id = str(lp["elements"][0]["landing_point_id"])
         nombre = lp["elements"][0]["name"]
-        n_nom = lt.newList('SINGLE LINKED')
-        lt.addLast(n_nom, str.split(nombre, ","))
-        pais_lp = lt.lastElement(n_nom)
-        
+        n_nom = []
+        n_nom = str.split(nombre, ", ")
+        tam = len(n_nom)
+        pais_lp = n_nom[tam-1]
+
         if pais_lp == pais:
-            print("ENTRA IF 1")
+            print(" ===== ENCUENTRO LP DEL PAIS "+lp_id+ pais_lp)
             dist = model.DistGeoLandP(analyzer, nuevo_id, lp_id)
-            vert = gr.vertices(analyzer["connections"])
             v_lp = lt.newList('SINGLE_LINKED')
+            #Buscar vertices del landing point en el grafo
             for v in lt.iterator(vert):
-                print("for 2")
+                #print("for 2")
                 num = str.split(v,"-")
-                if lp_id == num[0]:
-                    print("if 2")
+                #Compara la identificación del landing point con el vértice para encontrarlo
+                if lp_id == num[0] and lp_id != nuevo_id:
+                    print("ENCUENTRO VERTICES DEL LP")
+                    #Crear una lista con los vértices que sean del mismo id (landing point)
                     lt.addLast(v_lp, v)
-                    gr.addEdge(analyzer["connections"], nuevo_id, v, weight= dist)
+            print(v_lp)
+            #Iterar sobre la lista para conectar la capital con los vértices de landing point
+            vtam = lt.size(v_lp)
+            
+            print(vtam)
+            for elem in lt.iterator(v_lp):
+                print("Entro y vtam =" + str(vtam))
+                print(elem)
+                gr.addEdge(analyzer["connections"], nuevo_id, elem, weight= dist)
+                a = gr.adjacents(analyzer["connections"], nuevo_id)
+    print("ADJACENT")
+    print(a)
         
 
 def unirVertLp(analyzer): 

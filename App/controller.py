@@ -53,7 +53,7 @@ def loadData(analyzer):
     loadConnections(analyzer)
     AgregarCapital(analyzer)
 
-    return vertices, pais 
+    return (vertices, pais) 
 
 
 def loadConnections(analyzer):
