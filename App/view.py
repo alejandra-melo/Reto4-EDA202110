@@ -99,19 +99,21 @@ def printLandingP(lista):
     print("Landing points: ")
     for elem in lt.iterator(lista):
         for lp in lt.iterator(mp.valueSet(analyzer["landing_points"])):
-            if lp["elements"][0]["landing_point_id"] in elem:
+            if str(lp["elements"][0]["landing_point_id"]) in elem:
                 nYp = lp["elements"][0]["name"]
                 id = lp["elements"][0]["landing_point_id"]
                 print("Nombre y país: " + str(nYp) + " || " + "Identificador: " + str(id))
 
 
-def printCaminoCorto (path):
+def printCaminoCorto(path):
     while not st.isEmpty(path):
         edge = st.pop(path)
-        id_lp = edge["vertexA"]
-        name_lpA = model.VNumaNombre(analyzer, id_lp)
-        id_lp = edge["vertexB"]
-        name_lpB = model.VNumaNombre(analyzer, id_lp)
+        id_lpa = str(edge["vertexA"])
+        id_lpb = str(edge["vertexB"])
+        print(id_lpa)
+        print(id_lpb)
+        name_lpA = model.VNumaNombre(analyzer, id_lpa)
+        name_lpB = model.VNumaNombre(analyzer, id_lpb)
         print("  " + name_lpA + " -> " + name_lpB + "  -- distancia (km): " + str(edge["weight"]))
 
 

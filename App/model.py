@@ -147,32 +147,20 @@ def conexionCapital(analyzer, pais, nuevo_id):
         n_nom = str.split(nombre, ", ")
         tam = len(n_nom)
         pais_lp = n_nom[tam-1]
-
         if pais_lp == pais:
-            print(" ===== ENCUENTRO LP DEL PAIS "+lp_id+ pais_lp)
             dist = model.DistGeoLandP(analyzer, nuevo_id, lp_id)
             v_lp = lt.newList('SINGLE_LINKED')
             #Buscar vertices del landing point en el grafo
             for v in lt.iterator(vert):
-                #print("for 2")
                 num = str.split(v,"-")
                 #Compara la identificación del landing point con el vértice para encontrarlo
                 if lp_id == num[0] and lp_id != nuevo_id:
-                    print("ENCUENTRO VERTICES DEL LP")
                     #Crear una lista con los vértices que sean del mismo id (landing point)
                     lt.addLast(v_lp, v)
-            print(v_lp)
             #Iterar sobre la lista para conectar la capital con los vértices de landing point
-            vtam = lt.size(v_lp)
-            
-            print(vtam)
             for elem in lt.iterator(v_lp):
-                print("Entro y vtam =" + str(vtam))
-                print(elem)
                 gr.addEdge(analyzer["connections"], nuevo_id, elem, weight= dist)
-                a = gr.adjacents(analyzer["connections"], nuevo_id)
-    print("ADJACENT")
-    print(a)
+
         
 
 def unirVertLp(analyzer): 
@@ -383,7 +371,7 @@ def getPuntosConex(analyzer):
         l_v = lt.newList('ARRAY_LIST')
         for v in lt.iterator(vert):
             num = str.split(v,"-")
-            if lp["elements"][0]["landing_point_id"] == num[0]:
+            if str(lp["elements"][0]["landing_point_id"]) == num[0]:
                 lt.addLast(l_v, v)
         calc_cables = lt.size(l_v)
         if calc_cables > max:
@@ -411,28 +399,20 @@ def getRutaMenorDist(analyzer, paisA, paisB):
     entre cada par consecutivo de landing points) y la
     distancia total de la ruta.
     """
-    #encontrar la capital
+    #encontrar la capital de cada país
     cap_A = buscaCapital(analyzer, paisA)
     cap_B = buscaCapital(analyzer, paisB)
 
-    print("CAPITALES")
- 
-    #encontrar landing_point de la capital y lo devuelve como id
+    #encontrar landing_point de cada capital y lo devuelve como id
     vertA = VNombreaNum(analyzer, cap_A)
     vertB = VNombreaNum(analyzer, cap_B)
     e1 = False
     e2 = False
     vertixA = str(vertA)
     vertixB = str(vertB)
-    print("LANDING POINT IDS DE CAPITALES ======")
-    print(vertA, vertB)
+    #recuperar los vértices (landing point-cable)
     vert = gr.vertices(analyzer["connections"])
     for v in lt.iterator(vert):
-        if v == vertixA:
-            print("ENCONTRE VERTICE A")
-            print(v)
-            lista = gr.adjacents(analyzer["connections"], vertixA)
-            print(lista)
         if e1 == True and e2 == True:
             break
         num = str.split(v,"-")
@@ -442,24 +422,13 @@ def getRutaMenorDist(analyzer, paisA, paisB):
         elif vertB == num[0]:
             vertixB = str(v)
             e2 = True
-    vertixA='4315-GlobeNet'
-    lista = gr.adjacents(analyzer["connections"], vertixA)
-    print(lista)
-
-    print("VERTICES PARA CALCULO DE MENOR RUTA ......")
-    print(vertixA, vertixB)
-
-    
-
+   
     dij = djk.Dijkstra(analyzer["connections"], vertixA)
-    # dij['type'] == "ADJ_LIST"
-    print("hola, 425")
-    print(type(dij))
-
     assert (djk.hasPathTo(dij, vertixB) is True)
     path = djk.pathTo(dij, vertixB)
     distancia = djk.distTo(dij, vertixB)
-    print("SALGO RUTA MENOR ")
+    print(path)
+
     return(path, distancia)
 
 
