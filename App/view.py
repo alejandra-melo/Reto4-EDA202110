@@ -125,12 +125,19 @@ def printCaminoCorto(path):
 
 def printPaises(grafo):
     distancias = gr.edges(grafo)
-    paises = gr.vertices(grafo)
-    orden = qs.sort(distancias, compare)
-    print(distancias)
-    print("OOOO")
-    print(orden)
+    orden = []
 
+    for d in lt.iterator(distancias):
+        dist = d["weight"]
+        pais = d["vertexB"]
+        vert = (dist, pais)
+        orden.append(vert)
+
+    orden.sort(reverse = True)
+    for elem in orden:
+        print("-" + str(elem[1] + " -> " + str(elem[0])) + "km")
+
+    print("\nCantidad de paises que podrían verse afectados: " + str(len(orden)))
 
 
 def compare(elem1, elem2):
@@ -283,6 +290,8 @@ while True:
               "Memoria [kB]: " + str(delta_memory) + "\n")
 
         print("\n++++++ Req. No. 5 results ... ++++++")
+        print("Los paises que podrían verse afectados por la caida del landing point " + str(lp)
+               + " son: ")
         printPaises(respuesta)
         
 

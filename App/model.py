@@ -446,13 +446,13 @@ def getInfraest(analyzer):
     (mayor numero de arcos entre raiz y la hoja que hace parte
     de la red de expansion minima).
     """
-    mst = prim.PrimMST(analyzer["connections"])
-    valores = gr.edges(mst)
-    num_v = gr.numEdges(mst['edgeTo'])
-    peso = prim.weightMST(analyzer["connections"], mst)
+    g_mst = prim.PrimMST(analyzer["connections"])
+    vert = gr.vertices(g_mst)
+    nodos = lt.size(vert)
+    #nodos = gr.numVertices(mst)
+    peso = prim.weightMST(analyzer["connections"], g_mst)
     
-
-    return(num_v, peso)
+    return(nodos, peso)
 
 
 def getFallas(analyzer, lpe):
@@ -492,7 +492,7 @@ def getFallas(analyzer, lpe):
                     p = str.split(name, ", ")
                     tam = len(p)
                     pais = p[tam-1]
-                    
+
             if gr.containsVertex(g_pais, pais) != True:
                 gr.insertVertex(g_pais, pais)
                 gr.addEdge(g_pais,lpe,pais,int(dist_new))
