@@ -306,8 +306,6 @@ def DistGeoLandP(analyzer, origen, destino):
 # Funciones de ordenamiento
 
 def VNombreaNum(analyzer, lp):
-    print("VNombreaNum")
-    print(lp)
     for lps in lt.iterator(mp.valueSet(analyzer["landing_points"])):
         if str(lp) in str(lps["elements"][0]["name"]):
             id_lp = lps["elements"][0]["landing_point_id"]
@@ -316,13 +314,21 @@ def VNombreaNum(analyzer, lp):
 
 
 def VNumaNombre(analyzer, lp):
-    
     for lps in lt.iterator(mp.valueSet(analyzer["landing_points"])):
         if str(lp) in str(lps["elements"][0]["landing_point_id"]):
             id_lp = lps["elements"][0]["name"]
     
     return(id_lp)
 
+def numaVertLp(analyzer, num):
+    vert = gr.vertices(analyzer["connections"])
+    lista = lt.newList("SINGLE_LINKED")
+    for v in lt.iterator(vert):
+        num_v = str.split(v,"-")
+        if num == num_v[0]:
+            lt.addLast(lista, v)
+
+    return(lista)
 
 def getClustCom(analyzer, lp1, lp2):
     """
@@ -391,8 +397,6 @@ def buscaCapital(analyzer, pais):
 
     return(capital)
            
-
-
 def getRutaMenorDist(analyzer, paisA, paisB):
     """
     Retorna la ruta (incluir la distancia de conexión [km]
@@ -427,7 +431,6 @@ def getRutaMenorDist(analyzer, paisA, paisB):
     assert (djk.hasPathTo(dij, vertixB) is True)
     path = djk.pathTo(dij, vertixB)
     distancia = djk.distTo(dij, vertixB)
-    print(path)
 
     return(path, distancia)
 
@@ -444,13 +447,10 @@ def getInfraest(analyzer):
     de la red de expansion minima).
     """
     mst = prim.PrimMST(analyzer["connections"])
-    #valores = gr.edges(mst)
-    #num_v = q.size(mst["mst"])
-    #num_v = gr.numEdges(mst['edgeTo'])
+    valores = gr.edges(mst)
+    num_v = gr.numEdges(mst['edgeTo'])
     peso = prim.weightMST(analyzer["connections"], mst)
-    print(peso)
-    #print(mst)
-    print(mst["mst"])
+    
 
     return(num_v, peso)
 
@@ -463,13 +463,60 @@ def getFallas(analyzer, lp):
     son aquellos que cuentan con landing points directamente
     conectados con el landing point afectado. 
     """
-    id_lp = VNombreaNum(analyzer, lp)
-    p_afect = gr.adjacents(analyzer["connections"], id_lp)
-    dist_p = gr.adjacentEdges(analyzer["connections"], id_lp)
-    #ordenar la lista según distancia mayor a menor
-    num_p = gr.degree(analyzer["connections"], id_lp)
+    
+    #Se define grafo temporal para carga de datos
+    g_pais = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=True,
+                                              size=250,
+                                              comparefunction=compareIds)
 
-    return(p_afect, num_p)
+    #Recupera id del LP a partir del LP de entrada
+    id_lp = VNombreaNum(analyzer, lp)
+    print("ID LANDING PONT : " + id_lp) 
+    #Recupera todos los vertices del LP de entrada
+    nom_v_lp = numaVertLp(analyzer, id_lp)
+    print("VERTICES DEL LANDING POINT")  
+    
+    gr.insertVertex(g_pais, lp)
+  
+    for v_a in lt.iterator(nom_v_lp):
+        print(v_a)
+        #Recupera los vertices adyacentes de cada vertice del LP
+        vert_adj = lt.newList("SINGLE LINKED")
+        vert_adj = gr.adjacents(analyzer["connections"], v_a)
+        vertixA = v_a
+        print("ADYACENTES .....")
+        for v_b in lt.iterator(vert_adj): 
+            print(v_b)
+            vertixB = v_b
+            #Recupera arco vertixA to vertixB
+            arco = gr.getEdge(analyzer["connections"], vertixA, vertixB)
+            dist_new = arco["weight"]
+            print(dist_new)
+            #Recupera pais de VertixB
+            id_v_adj = str.split(vertixB,"-")
+            for lp in lt.iterator(mp.valueSet(analyzer["landing_points"])):            
+                if lp["elements"][0]["landing_point_id"] == id_v_adj[0]:
+                    name = lp["elements"][0]["name"]
+                    p = str.split(name, ", ")
+                    tam = len(p)
+                    pais = p[tam-1]
+            print("PAIS "+pais)
+            if gr.containsVertex(g_pais, pais) != True:
+                gr.insertVertex(g_pais, pais)
+                #gr.addEdge(g_pais,vertixA,pais,dist_new)
+                
+            else:
+                #Recupera peso arco existente en grafo
+                #arco = gr.getEdge(g_pais, vertixA, pais)
+                dist_ant = 100
+                #dist_ant = arco["weight"]
+                if dist_new < dist_ant:
+                    print("HAY QUE CAMBIAR PESO DEL ARCO")
+    print("TERMINAMOS")
+    print(gr.vertices(g_pais))
+    print(gr.edges(g_pais))
+    return(g_pais)
 
 
 def getMejoresCanales(analyzer, pais, cable):

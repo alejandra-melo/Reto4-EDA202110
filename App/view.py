@@ -110,11 +110,15 @@ def printCaminoCorto(path):
         edge = st.pop(path)
         id_lpa = str(edge["vertexA"])
         id_lpb = str(edge["vertexB"])
-        print(id_lpa)
-        print(id_lpb)
-        name_lpA = model.VNumaNombre(analyzer, id_lpa)
-        name_lpB = model.VNumaNombre(analyzer, id_lpb)
-        print("  " + name_lpA + " -> " + name_lpB + "  -- distancia (km): " + str(edge["weight"]))
+        lpa = str.split(id_lpa,"-")
+        lpb = str.split(id_lpb,"-")
+        id_lpa = lpa[0]
+        id_lpb = lpb[0]
+        if id_lpa != id_lpb:
+            name_lpA = model.VNumaNombre(analyzer, id_lpa)
+            name_lpB = model.VNumaNombre(analyzer, id_lpb)
+            print("  " + name_lpA + " -> " + name_lpB + "  -- distancia (km): " +
+                   str(edge["weight"]))
 
 
 """
@@ -256,9 +260,9 @@ while True:
               "Memoria [kB]: " + str(delta_memory) + "\n")
 
         print("\n++++++ Req. No. 5 results ... ++++++")
-        print(respuesta[0])
+        #print(respuesta[0])
         print("---")
-        print(respuesta[1])
+        #print(respuesta[1])
 
     elif int(inputs[0]) == 7:
         pais = input("Nombre del país: ")
