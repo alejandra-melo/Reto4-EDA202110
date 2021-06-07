@@ -271,9 +271,7 @@ while True:
         print("\n++++++ Req. No. 4 results ... ++++++")
         print("Numero de nodos conectados a la red de expansión crítica: "+str(respuesta[0]))
         print("Costo total en km de la red de expansión mínima: "+str(respuesta[1]))
-        print(respuesta[0])
-        print(respuesta[1])
-        
+    
 
     elif int(inputs[0]) == 6:
         lp = input("Nombre del landing point: ")
@@ -343,6 +341,8 @@ while True:
               "Memoria [kB]: " + str(delta_memory) + "\n")
 
         print("\n++++++ Req. No. 7 results ... ++++++")
+        print(respuesta[0])
+        print(respuesta[1])
 
     elif int(inputs[0]) == 9:
         delta_time = -1.0
