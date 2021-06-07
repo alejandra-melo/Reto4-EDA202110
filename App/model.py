@@ -468,11 +468,22 @@ def getInfraest(analyzer):
             lt.addLast(lista_v, v_destino)
     
     nodos = lt.size(lista_v)
-
+    altura = 0
+    list_rama = lt.newList("ARRAY_LIST")
     for elem in lt.iterator(lista_v):
-        a = gr.indegree(grafo_mst, elem)
-        print(a)
+        nivel = 0
+        v_rama = lt.newList("ARRAY_LIST")
+        while gr.indegree(grafo_mst, elem) != 0:
+            nivel += 1
+            lt.addLast(v_rama, elem)
+            elem = gr.indegree(grafo_mst, elem)
+            if nivel > altura:
+                fin = elem
+                list_rama = v_rama
     
+    print(fin)
+    print(list_rama)
+
     return(nodos, peso)
 
 
