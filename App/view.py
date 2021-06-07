@@ -341,8 +341,8 @@ while True:
               "Memoria [kB]: " + str(delta_memory) + "\n")
 
         print("\n++++++ Req. No. 7 results ... ++++++")
-        print(respuesta[0])
-        print(respuesta[1])
+        print("Ruta: " + str(respuesta[0]))
+        print("Saltos: " + str(respuesta[1]))
 
     elif int(inputs[0]) == 9:
         delta_time = -1.0
