@@ -28,6 +28,8 @@
 from DISClib.DataStructures.rbt import keys
 import config as cf
 import math as mt
+import requests as rq
+import json as js
 from App import model
 import csv
 from DISClib.ADT import list as lt
@@ -280,31 +282,6 @@ def compareIds(stop, keyvaluestop):
     else:
         return -1
 
-    
-def DistGeoLandP(analyzer, origen, destino):
-    #1)Obtener la latitud y longitud del origen y destino
-    for lps in lt.iterator(mp.valueSet(analyzer["landing_points"])):
-        if str(origen) in str(lps["elements"][0]["landing_point_id"]):
-            lat_o = lps["elements"][0]["latitude"]
-            long_o = lps["elements"][0]["longitude"]
-        if str(destino) in str(lps["elements"][0]["landing_point_id"]):
-            lat_d = lps["elements"][0]["latitude"]
-            long_d = lps["elements"][0]["longitude"]
-
-    #2)Aplicar la función Haversine para calcular las distancias
-    rad = mt.pi/180
-    f_lat_o = float(lat_o)
-    f_lat_d = float(lat_d)
-    f_long_o = float(long_o)
-    f_long_d = float(long_d)
-    dif_lat = f_lat_o - f_lat_d
-    dif_long = f_long_o - f_long_d
-    r_tierra = 6372.795477598
-    a = (mt.sin(rad*dif_lat)/2)**2 + mt.cos(rad*f_lat_d) * mt.cos(rad*f_lat_o) * (mt.sin(rad*dif_long)/2)**2
-    distancia = 2 * r_tierra * mt.asin(mt.sqrt(a))
-
-    return(distancia)
-
 
 # Funciones de ordenamiento
 
@@ -312,15 +289,12 @@ def VNombreaNum(analyzer, lp):
     for lps in lt.iterator(mp.valueSet(analyzer["landing_points"])):
         if str(lp) in str(lps["elements"][0]["name"]):
             id_lp = lps["elements"][0]["landing_point_id"]
-    
     return(id_lp)
-
 
 def VNumaNombre(analyzer, lp):
     for lps in lt.iterator(mp.valueSet(analyzer["landing_points"])):
         if str(lp) in str(lps["elements"][0]["landing_point_id"]):
-            id_lp = lps["elements"][0]["name"]
-    
+            id_lp = lps["elements"][0]["name"]    
     return(id_lp)
 
 def numaVertLp(analyzer, num):
@@ -468,6 +442,8 @@ def getInfraest(analyzer):
             lt.addLast(lista_v, v_destino)
     
     nodos = lt.size(lista_v)
+
+    """
     altura = 0
     list_rama = lt.newList("ARRAY_LIST")
     for elem in lt.iterator(lista_v):
@@ -480,10 +456,7 @@ def getInfraest(analyzer):
             if nivel > altura:
                 fin = elem
                 list_rama = v_rama
-    
-    print(fin)
-    print(list_rama)
-
+    """
     return(nodos, peso)
 
 
@@ -540,10 +513,94 @@ def getFallas(analyzer, lpe):
                     
     return(g_pais)
 
-
-def getMejoresCanales(analyzer, pais, cable):
-    pass
+def DatosIP(ip_id):
+    api_url = "http://ip-api.com/json/"
+    res = rq.get(api_url+ip_id+"?fields=16577")
+    api_res = js.loads(res.content)
+    return (api_res)
 
 def getMejorRuta(analyzer, ip1, ip2):
-    pass
+    dat_ip1 = DatosIP(ip1)
+    pais_ip1 = dat_ip1["country"]
+    lon_ip1 = dat_ip1["lon"]
+    lat_ip1 = dat_ip1["lat"]
 
+    dat_ip2 = DatosIP(ip2)
+    pais_ip2 = dat_ip2["country"]
+    lon_ip2 = dat_ip2["lon"]
+    lat_ip2 = dat_ip2["lat"]
+
+    #Crear copia grafo connections
+    c_grafo = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=True,
+                                              size=14000,
+                                              comparefunction=compareIds)
+    c_grafo = analyzer["connections"]
+
+    #Recupera Capital de ambos paises
+    cap_ip1 = buscaCapital(analyzer,pais_ip1)
+    cap_ip2 = buscaCapital(analyzer,pais_ip2)
+
+    #Recupera id landing point de cada capital
+    ver_cap1 = str(VNombreaNum(analyzer, cap_ip1))
+    ver_cap2 = str(VNombreaNum(analyzer, cap_ip2))
+
+    #Recupera ubicación geografica de capitales
+
+    e1 = 0
+    e2 = 0
+    for country in lt.iterator(mp.valueSet(analyzer["countrys"])):
+        if pais_ip1 == country["elements"][0]["CountryName"] and e1 == 0:
+            lat_cap1 = country["elements"][0]["CapitalLatitude"]
+            lon_cap1 = country["elements"][0]["CapitalLongitude"]
+            e1 = 1
+        elif pais_ip2 == country["elements"][0]["CountryName"] and e2 == 0:
+            lat_cap2 = country["elements"][0]["CapitalLatitude"]
+            lon_cap2 = country["elements"][0]["CapitalLongitude"]
+            e2 = 1
+
+    #Calcular distancia ips con capital de pais al que pertenece cada uno
+    dist_ip1 = Haversine(lat_ip1,lon_ip1,lat_cap1,lon_cap1)
+    dist_ip2 = Haversine(lat_ip2,lon_ip2,lat_cap2,lon_cap2)
+   
+    #agregar vertices ip1 e ip2 a grafo
+    gr.insertVertex(c_grafo,ip1)
+    gr.insertVertex(c_grafo,ip2)
+  
+    #conectar con cada capital
+    gr.addEdge(c_grafo, ip1, ver_cap1, weight = dist_ip1)
+    gr.addEdge(c_grafo, ip2, ver_cap2, weight = dist_ip2)
+   
+    #calcular el camino mas corto 
+    dij = djk.Dijkstra(c_grafo, ip1)
+    assert (djk.hasPathTo(dij, ip2) is True)
+    path = djk.pathTo(dij, ip2)
+    saltos = st.size(path)
+   
+    return(path,saltos)
+
+def DistGeoLandP(analyzer, origen, destino):
+    #1)Obtener la latitud y longitud del origen y destino
+    for lps in lt.iterator(mp.valueSet(analyzer["landing_points"])):
+        if str(origen) in str(lps["elements"][0]["landing_point_id"]):
+            lat_o = lps["elements"][0]["latitude"]
+            long_o = lps["elements"][0]["longitude"]
+        if str(destino) in str(lps["elements"][0]["landing_point_id"]):
+            lat_d = lps["elements"][0]["latitude"]
+            long_d = lps["elements"][0]["longitude"]
+    distancia = Haversine(lat_o,long_o,lat_d,long_d)
+    return(distancia)
+
+def Haversine(lat_o, long_o, lat_d, long_d):
+    #2)Aplicar la función Haversine para calcular las distancias
+    rad = mt.pi/180
+    f_lat_o = float(lat_o)
+    f_lat_d = float(lat_d)
+    f_long_o = float(long_o)
+    f_long_d = float(long_d)
+    dif_lat = f_lat_o - f_lat_d
+    dif_long = f_long_o - f_long_d
+    r_tierra = 6372.795477598
+    a = (mt.sin(rad*dif_lat)/2)**2 + mt.cos(rad*f_lat_d) * mt.cos(rad*f_lat_o) * (mt.sin(rad*dif_long)/2)**2
+    distancia = 2 * r_tierra * mt.asin(mt.sqrt(a))
+    return(distancia)
