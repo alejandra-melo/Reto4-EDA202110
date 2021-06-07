@@ -34,10 +34,12 @@ from DISClib.ADT import list as lt
 from DISClib.DataStructures import arraylist as alt
 from DISClib.ADT import map as mp
 from DISClib.ADT import queue as q
+from DISClib.ADT import stack
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import prim
+from DISClib.Algorithms.Graphs import dfs
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.ADT.graph import gr
 from DISClib.ADT import stack as st
@@ -437,22 +439,35 @@ def getRutaMenorDist(analyzer, paisA, paisB):
 
 def getInfraest(analyzer):
     """
-    Identificar la red de expansión minima en cuanto a
-    distancia que pueda darle cobertura a la mayor cantidad
-    de landing points. Retorna: # de nodos conectados a la
-    red de expansion minima (camino de menor costo que 
-    conecta la mayor cantidad de nodos), costo total de la
-    red de expansión minima y presentar la rama mas larga
-    (mayor numero de arcos entre raiz y la hoja que hace parte
-    de la red de expansion minima).
+    Identificar la red de expansión minima en cuanto a distancia que
+    pueda darle cobertura a la mayor cantidad de landing points.
+    Retorna: # de nodos conectados a la red de expansion minima (camino
+    de menor costo que conecta la mayor cantidad de nodos), costo total
+    de la red de expansión minima y presentar la rama mas larga (mayor
+    numero de arcos entre raiz y la hoja que hace parte de la red de expansion minima).
     """
     g_mst = prim.PrimMST(analyzer["connections"])
-    vert = gr.vertices(g_mst)
-    nodos = lt.size(vert)
-    #nodos = gr.numVertices(mst)
     peso = prim.weightMST(analyzer["connections"], g_mst)
+    lista_v = lt.newList("ARRAY_LIST")
     
-    return(nodos, peso)
+    for vert in lt.iterator(mp.valueSet(g_mst["edgeTo"])):
+        v_origen = vert["vertexA"]
+        v_destino = vert["vertexB"]
+        if lt.isPresent(lista_v, v_origen) != True:
+            lt.addLast(lista_v, v_origen)
+        elif lt.isPresent(lista_v, v_destino) != True:
+            lt.addLast(lista_v, v_destino)
+        max_v = 0
+        #if dfs.hasPathTo(g_mst, v_destino) == True:
+        assert prim.edgesMST(g_mst, v_destino)
+        altura = stack.size(dfs.pathTo(g_mst, v_destino))
+        if altura > max_v:
+            max_v = altura
+
+    nodos = lt.size(lista_v)
+    #nodos = gr.numVertices(mst)
+    
+    return(nodos, peso, max_v)
 
 
 def getFallas(analyzer, lpe):

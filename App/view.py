@@ -269,6 +269,9 @@ while True:
               "Memoria [kB]: " + str(delta_memory) + "\n")
        
         print("\n++++++ Req. No. 4 results ... ++++++")
+        print(respuesta[0])
+        print(respuesta[1])
+        print(respuesta[2])
 
     elif int(inputs[0]) == 6:
         lp = input("Nombre del landing point: ")

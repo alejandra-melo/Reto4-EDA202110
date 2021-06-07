@@ -130,7 +130,7 @@ def vertices(graph):
     Raises:
         Exception
     """
-    if (graph['type'] == "PROBING"):
+    if (graph['type'] == "ADJ_LIST"):
         return alt.vertices(graph)
 
 
