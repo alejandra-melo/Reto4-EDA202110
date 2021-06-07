@@ -181,7 +181,7 @@ def initSearch(graph):
         for vert in lt.iterator(vertices):
             map.put(search['distTo'], vert, math.inf)
             map.put(search['marked'], vert, False)
-
+            
         search['pq'] = pq.newIndexMinPQ(cmpfunction=graph['comparefunction'])
         search['mst'] = q.newQueue()
 

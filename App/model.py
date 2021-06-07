@@ -32,6 +32,7 @@ from App import model
 import csv
 from DISClib.ADT import list as lt
 from DISClib.DataStructures import arraylist as alt
+from DISClib.DataStructures import bst
 from DISClib.ADT import map as mp
 from DISClib.ADT import queue as q
 from DISClib.ADT import stack
@@ -449,25 +450,30 @@ def getInfraest(analyzer):
     g_mst = prim.PrimMST(analyzer["connections"])
     peso = prim.weightMST(analyzer["connections"], g_mst)
     lista_v = lt.newList("ARRAY_LIST")
-    
+    grafo_mst = gr.newGraph(datastructure='ADJ_LIST', directed=True,
+                            size=10000, comparefunction=compareIds)
+
     for vert in lt.iterator(mp.valueSet(g_mst["edgeTo"])):
         v_origen = vert["vertexA"]
         v_destino = vert["vertexB"]
+        costo = vert["weight"]
+        if gr.containsVertex(grafo_mst, v_origen) != True:
+            gr.insertVertex(grafo_mst, v_origen)
+        if gr.containsVertex(grafo_mst, v_destino) != True:
+            gr.insertVertex(grafo_mst, v_destino)
+        gr.addEdge(grafo_mst, v_origen, v_destino, int(costo))
         if lt.isPresent(lista_v, v_origen) != True:
             lt.addLast(lista_v, v_origen)
         elif lt.isPresent(lista_v, v_destino) != True:
             lt.addLast(lista_v, v_destino)
-        max_v = 0
-        #if dfs.hasPathTo(g_mst, v_destino) == True:
-        assert prim.edgesMST(g_mst, v_destino)
-        altura = stack.size(dfs.pathTo(g_mst, v_destino))
-        if altura > max_v:
-            max_v = altura
-
-    nodos = lt.size(lista_v)
-    #nodos = gr.numVertices(mst)
     
-    return(nodos, peso, max_v)
+    nodos = lt.size(lista_v)
+
+    for elem in lt.iterator(lista_v):
+        a = gr.indegree(grafo_mst, elem)
+        print(a)
+    
+    return(nodos, peso)
 
 
 def getFallas(analyzer, lpe):

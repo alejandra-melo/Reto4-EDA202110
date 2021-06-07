@@ -18,6 +18,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contribuciones:
+ *
+ * Dario Correal - Version inicial
  """
 
 import config as cf
@@ -34,7 +38,6 @@ from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.ADT import stack
 from DISClib.ADT.graph import gr
 from DISClib.Algorithms.Sorting import quicksort as qs
-
 import time
 import tracemalloc
 assert cf
@@ -67,13 +70,11 @@ def printMenu():
 
 catalog = None
 
-
 def getTime():
     """
     devuelve el instante tiempo de procesamiento en milisegundos
     """
     return float(time.perf_counter()*1000)
-
 
 def getMemory():
     """
@@ -96,7 +97,6 @@ def deltaMemory(start_memory, stop_memory):
     # de Byte -> kByte
     delta_memory = delta_memory/1024.0
     return delta_memory
-
 
 def printLandingP(lista):
     print("Landing points: ")
@@ -271,7 +271,7 @@ while True:
         print("\n++++++ Req. No. 4 results ... ++++++")
         print(respuesta[0])
         print(respuesta[1])
-        print(respuesta[2])
+        #print(respuesta[2])
 
     elif int(inputs[0]) == 6:
         lp = input("Nombre del landing point: ")
