@@ -333,8 +333,8 @@ def getClustCom(analyzer, lp1, lp2):
             vertice2 = v 
             e2 = True
 
-    print(vertice1)
-    print(vertice2)
+    #print(vertice1)
+    #print(vertice2)
 
     clusters = scc.connectedComponents(sccs)
     mismo_c = scc.stronglyConnected(sccs, vertice1, vertice2)
